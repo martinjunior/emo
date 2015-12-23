@@ -1,0 +1,191 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+
+
+.sg-page-hd {
+    width: 240px;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: auto;
+    border-right: 1px solid #f1f1f1;
+    background: #ffffff;
+    box-shadow: 0px 2px 2px rgba(241, 241, 241, 0.8)
+}
+
+.sg-page-bd {
+    padding: 50px;
+}
+
+.sg-page-hd + .sg-page-bd {
+    padding-left: 290px;
+}
+
+.sg-masthead>* {
+    padding: 20px
+}
+
+.sg-masthead>*+* {
+    border-top: 1px solid #f1f1f1
+}
+
+.sg-nav>*+* {
+    margin-top: 10px
+}
+
+.sg-nav-menu>* {
+    margin-left: 20px
+}
+
+.sg-nav-menu>*+* {
+    margin-top: 5px
+}
+
+.sg-component>*+* {
+    border-top: 1px solid #cbcbcb
+}
+
+.sg-component-box {
+    padding: 20px
+}
+
+.sg-component-box>*+* {
+    margin-top: 15px
+}
+
+.sg-drawer-box-hd {
+    position: relative
+}
+
+.sg-drawer-box-hd:after {
+    content: "Example";
+    display: block;
+    padding: 5px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 0 0 0 2px;
+    background: #f1f1f1;
+    color: #b1b1b1;
+    font-size: 10px;
+    line-height: 1
+}
+
+.sg-component-list>*+* {
+    border-top: 1px solid #f1f1f1
+}
+
+.sg-drawer {
+    width: 100%;
+    display: table
+}
+
+.sg-drawer>* {
+    display: table-cell;
+    vertical-align: top
+}
+
+.sg-drawer-box-hd,
+.sg-drawer-ft {
+    padding: 20px
+}
+
+.sg-drawer-ft {
+    width: 1px;
+    white-space: nowrap;
+    border-left: 1px solid #f1f1f1;
+    background: #fefefe
+}
+
+.sg-drawer-box-bd {
+    display: none;
+    border-top: 1px solid #f1f1f1
+}
+
+.sg-drawer.isActive .sg-drawer-box-bd {
+    display: block
+}
+
+.sg-drawer-icon_close {
+    display: none
+}
+
+.sg-drawer.isActive .sg-drawer-icon_open {
+    display: none
+}
+
+.sg-drawer.isActive .sg-drawer-icon_close {
+    display: block
+}
+
+.sg-hdg {
+    font-size: 28px
+}
+
+.sg-icon {
+    width: 44px;
+    height: 44px;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    border-radius: 2px;
+    border: none;
+    background: #333;
+    color: #fff;
+    font-size: 16px;
+    text-align: center;
+    line-height: 42px
+}
+
+.sg-userContent>h1,
+.sg-userContent>h2,
+.sg-userContent>h3 {
+    font-size: 24px
+}
+
+.sg-userContent>h4 {
+    font-size: 20px
+}
+
+.sg-userContent>ul {
+    margin-left: 30px
+}
+
+.sg-userContent>ul li {
+    list-style-type: disc
+}
+
+.sg-userContent>hr {
+    height: 1px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border: none;
+    background: #b1b1b1
+}
+
+.sg-userContent>*+* {
+    margin-top: 20px
+}
+
+pre,
+code {
+    padding: 2px;
+    border-radius: 2px;
+    background: #333;
+    color: #f1f1f1
+}
+
+pre {
+    padding: 20px;
+    overflow: auto
+}
+
+pre code {
+    padding: 0;
+    background: none
+}

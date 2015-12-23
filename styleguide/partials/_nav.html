@@ -1,0 +1,53 @@
+<div class="sg-masthead">
+    <div class="sg-masthead-hd">
+        <h1 class="sg-hdg sg-hdg_1">
+            <abbr title="Elements Molecules Organisms">E.M.O.</abbr>
+        </h1>
+    </div>
+    <nav class="sg-masthead-bd">
+        <ul class="sg-nav">
+            <li>
+                <strong>Elements</strong>
+                <ul class="sg-nav-menu">
+                    {% for component in components %}
+                        {% if component.category == 'elements' %}
+                        <li>
+                            <a href="{{ pathToRoot }}elements/{{ component.file }}">
+                                {{ component.name }}
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </li>
+            <li>
+                <strong>Molecules</strong>
+                <ul class="sg-nav-menu">
+                    {% for component in components %}
+                        {% if component.category == 'molecules' %}
+                        <li>
+                            <a href="{{ pathToRoot }}molecules/{{ component.file }}">
+                                {{ component.name }}
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </li>
+            <li>
+                <strong>Organisms</strong>
+                <ul class="sg-nav-menu">
+                    {% for component in components %}
+                        {% if component.category == 'organisms' %}
+                        <li>
+                            <a href="{{ pathToRoot }}organisms/{{ component.file }}">
+                                {{ component.name }}
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</div>
