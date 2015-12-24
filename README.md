@@ -1,6 +1,8 @@
 # grunt-emo
 
-> A style-guide generator
+> A style-guide generator that uses [Swig.js](http://paularmstrong.github.io/swig/)
+
+Emo is a tool that scrapes documention from your source files which it then uses to generate a style-guide. Emo is capable of gathering documention from, essentially, any type of file, which allows you to easily document your JavaScript, HTML, or whatever other type of component that you'd like documented.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
@@ -146,6 +148,30 @@ grunt.initConfig({
     }
 });
 ```
+
+## Documentation Syntax
+
+Emo searches for name/value combinations within your source files. Said name/value combinations are expected to take the following format.
+
+```scss
+
+/*
+
+    `Name: Btn`
+
+    `Category: Btn`
+
+    `Description: <button>I'm a button</button>`
+
+*/
+
+.btn {
+    color: blue;
+}
+
+```
+
+Specifically, each name/pair value is expected to be enclosed within `` markings.
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
