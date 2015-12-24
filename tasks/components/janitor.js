@@ -34,9 +34,11 @@
             keys = section.match(regexs.keys);
             values = section.match(regexs.values);
 
-            if (!(keys && keys.forEach) || !(values && values.forEach)) {
+            if (!(keys && keys.forEach) || !(values && values.forEach && values.length === 2)) {
                 return;
             }
+
+            values.shift();
 
             this.addKeys(keys);
             this.addValues(values);

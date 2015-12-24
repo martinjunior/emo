@@ -10,8 +10,8 @@
     module.exports = {
         docs: /\{%.[\s\S]*%}/g,
         sections: /\{%([^\{%]+|[^\%}]+)%}/g,
-        keys: /([A-Za-z -_]+:)/g,
-        values: /:([\s\S]+)/g,
+        keys: /[a-zA-Z-_ ]+[^: ]/,
+        values: /:(.*)/,
         comments: /[\/\/]{2} ?/g,
         comment_tag_open: /\{%/,
         comment_tag_close: /\%}/,
