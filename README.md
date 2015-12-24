@@ -157,11 +157,11 @@ Emo searches for name/value combinations within your source files, which are the
 
 /*
 
-    `Name: Btn`
+    {% Name: Btn %}
 
-    `Category: Btn`
+    {% Category: Btn %}
 
-    `Description: <button>I'm a button</button>`
+    {% Description: <button>I'm a button</button> %}
 
 */
 
@@ -171,17 +171,17 @@ Emo searches for name/value combinations within your source files, which are the
 
 ```
 
-Specifically, each name/pair value is expected to be enclosed within `` markings. As components can be lengthy, it's not always ideal to inline HTML in your CSS/SCSS/LESS files. As such, emo allows you to load documentation from markdown files.
+Specifically, each name/pair value is expected to be enclosed within `{%%}` markings. As components can be lengthy, it's not always ideal to inline HTML in your CSS/SCSS/LESS files. As such, emo allows you to load documentation from markdown files.
 
 ```scss
 
 /*
 
-    `Name: Btn`
+    {% Name: Btn %}
 
-    `Category: Btn`
+    {% Category: Btn %}
 
-    `Description: relative/path/to/markdown-file.md`
+    {% Description: relative/path/to/markdown-file.md %}
 
 */
 
@@ -197,15 +197,15 @@ As previously mentioned, emo can accept any number of name/value combinations, t
 
 /*
 
-    `Name: Btn`
+    {% Name: Btn %}
 
-    `Category: Btn`
+    {% Category: Btn %}
 
-    `Version: 1.0.0`
+    {% Version: 1.0.0 %}
 
-    `Author: Michael Jordan`
+    {% Author: Michael Jordan %}
 
-    `Description: relative/path/to/btn_docs.md`
+    {% Description: relative/path/to/btn_docs.md %}
 
 */
 
@@ -223,15 +223,15 @@ The previous examples show name/value combinations within CSS comments. Emo is c
 // Btn
 //-------------------------------------------------
 //
-//  `Name: Btn`
+//  {% Name: Btn %}
 //
-//  `Category: Btn`
+//  {% Category: Btn %}
 //
-//  `Version: 1.0.0`
+//  {% Version: 1.0.0 %}
 //
-//  `Author: Michael Jordan`
+//  {% Author: Michael Jordan %}
 //
-//  `Description: relative/path/to/btn_docs.md`
+//  {% Description: relative/path/to/btn_docs.md %}
 //
 //-------------------------------------------------
 
@@ -245,11 +245,11 @@ The previous examples show name/value combinations within CSS comments. Emo is c
 
 <!--
 
-    `Name: Btn`
+    {% Name: Btn %}
 
-    `Category: elements`
+    {% Category: elements %}
 
-    `Description: <button class="btn">Im' a button</button>`
+    {% Description: <button class="btn">Im' a button</button> %}
 
 -->
 
