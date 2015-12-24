@@ -151,7 +151,7 @@ grunt.initConfig({
 
 ## Documentation Syntax
 
-Emo searches for name/value combinations within your source files. Said name/value combinations are expected to take the following format.
+Emo searches for name/value combinations within your source files. Note that the all values are parsed as markdown. Name/value combinations are expected to take the following format.
 
 ```scss
 
@@ -171,7 +171,49 @@ Emo searches for name/value combinations within your source files. Said name/val
 
 ```
 
-Specifically, each name/pair value is expected to be enclosed within `` markings.
+Specifically, each name/pair value is expected to be enclosed within `` markings. As components can be lengthy, it's not always ideal to inline HTML in your CSS/SCSS/LESS files. As such, emo allows you to load documentation from markdown files.
+
+```scss
+
+/*
+
+    `Name: Btn`
+
+    `Category: Btn`
+
+    `Description: relative/path/to/markdown-file.md`
+
+*/
+
+.btn {
+    color: blue;
+}
+
+```
+
+As previously mentioned, emo can accept any number of name/value combinations, though it demands that name, category and description are used. Each name/value combinations is attached available within the generated Swig templates via the `component` global. Use name/value combinations as you wish.
+
+```scss
+
+/*
+
+    `Name: Btn`
+
+    `Category: Btn`
+
+    `Version: 1.0.0`
+
+    `Author: Michael Jordan`
+
+    `Description: relative/path/to/markdown-file.md`
+
+*/
+
+.btn {
+    color: blue;
+}
+
+```
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
