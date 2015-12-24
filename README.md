@@ -171,7 +171,7 @@ Emo searches for name/value combinations within your source files; these name/va
 
 ```
 
-Specifically, each name/pair value is expected to be enclosed within `{%%}` markings and separated by a `:`. As components can be lengthy, it's not always ideal to inline HTML in your CSS/SCSS/LESS files. As such, emo allows you to load documentation from markdown files.
+Specifically, each name/pair value is expected to be enclosed within `{%%}` markings and separated by a `:`. As components can be lengthy, it's not always ideal to inline documenation in your CSS/SCSS/LESS files. As such, emo allows you to load documentation from markdown files.
 
 ```scss
 
@@ -191,7 +191,7 @@ Specifically, each name/pair value is expected to be enclosed within `{%%}` mark
 
 ```
 
-As previously mentioned, emo can accept any number of name/value combinations, though it demands that name, category and description are used. Each name/value combinations is attached available within the generated Swig templates via the `component` global. Use name/value combinations as you wish.
+As previously mentioned, emo can accept any number of name/value combinations, though it demands that name, category and description are used. Each name/value combination is available within the generated Swig templates via the `component` global. Use name/value combinations as you wish.
 
 ```scss
 
