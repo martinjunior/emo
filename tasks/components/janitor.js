@@ -3,29 +3,26 @@
 
     var regexs = require('../utils/regexs');
 
-    /**
-     * @class Janitor
-     * @param {String} mess
-     * @constructor
-     */
     var Janitor = function(mess) {
         if (!mess) {
             return;
         }
 
         this.components = [];
-        this.mess = mess[0].match(regexs.sections);
         this.keys = [];
         this.values = [];
+
+        this.mess = mess[0].match(regexs.sections).map(function(item) {
+            return item.replace(regexs.comment_tag_open, '')
+                       .replace(regexs.comment_tag_close, '')
+                       .trim();
+        });
 
         return this.sweep();
     };
 
     var proto = Janitor.prototype;
 
-    /**
-     * @method janitor.sweep
-     */
     proto.sweep = function() {
         var keys;
         var values;
@@ -58,28 +55,23 @@
         return this.components;
     };
 
-    /**
-     * @method addKeys
-     */
     proto.addKeys = function(keys) {
         keys.forEach(function(key) {
             this.keys.push(
-                key.replace(regexs.extra_chars, '').toLowerCase()
+                key.replace(regexs.extra_chars, '')
+                   .replace(':', '')
+                   .toLowerCase()
             );
         }.bind(this));
     };
 
-    /**
-     * @method addValues
-     */
     proto.addValues = function(values) {
         values.forEach(function(value) {
             this.values.push(
                 value
-                    .replace(':', '')
+                    .replace(regexs.extra_chars, '')
                     .replace(regexs.comments, '')
                     .trim()
-                    .slice(0, -1)
                 );
         }.bind(this));
     };

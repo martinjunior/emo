@@ -9,11 +9,6 @@
     var fileExists = require('../utils/fileExists');
     var merge = require('../utils/merge');
 
-    /**
-     * @class Scraper
-     * @param {Array} files
-     * @constructor
-     */
     var Scraper = function(files) {
         this.files = files;
 
@@ -24,25 +19,16 @@
 
     var proto = Scraper.prototype;
 
-    /**
-     * @method scraper.init
-     */
     proto.init = function() {
         this.files.forEach(this.scrape.bind(this));
 
         return this;
     };
 
-    /**
-     * @method scraper.get
-     */
     proto.get = function() {
         return this.components;
     };
 
-    /**
-     * @method scraper.scrape
-     */
     proto.scrape = function(item) {
         var src = item.src[0];
         var options = { encoding: 'utf8' };
@@ -56,9 +42,6 @@
         }.bind(this));
     };
 
-    /**
-     * @method scraper.add
-     */
     proto.add = function(component, options, basepath) {
         var keys;
 
@@ -89,9 +72,6 @@
         this.components.push(component);
     };
 
-    /**
-     * @method scraper.merge
-     */
     proto.merge = function(component) {
         var name = component.name;
 
@@ -106,16 +86,10 @@
         }.bind(this));
     };
 
-    /**
-     * @method scraper.isValid
-     */
     proto.isValid = function(component) {
         return component && component.category && component.name && component.description;
     };
 
-    /**
-     * @method scraper.exists
-     */
     proto.exists = function(component) {
         var name = component.name;
         var exists = false;
