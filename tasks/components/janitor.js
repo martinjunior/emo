@@ -3,6 +3,11 @@
 
     var regexs = require('../utils/regexs');
 
+    /**
+     * @class Janitor
+     * @param {String} mess
+     * @constructor
+     */
     var Janitor = function(mess) {
         if (!mess) {
             return;
@@ -18,6 +23,9 @@
 
     var proto = Janitor.prototype;
 
+    /**
+     * @method janitor.sweep
+     */
     proto.sweep = function() {
         var keys;
         var values;
@@ -50,6 +58,9 @@
         return this.components;
     };
 
+    /**
+     * @method addKeys
+     */
     proto.addKeys = function(keys) {
         keys.forEach(function(key) {
             this.keys.push(
@@ -58,6 +69,9 @@
         }.bind(this));
     };
 
+    /**
+     * @method addValues
+     */
     proto.addValues = function(values) {
         values.forEach(function(value) {
             this.values.push(
