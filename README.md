@@ -1,4 +1,4 @@
-# grunt-emo
+# grunt-emo (Beta)
 
 > A style-guide generator that uses [Swig.js](http://paularmstrong.github.io/swig/)
 
