@@ -259,7 +259,7 @@ The previous examples show name/value combinations within CSS comments. Emo is c
 
 ## Categories
 
-Emo was inspired by [pattern lab](http://patternlab.io/), which categorizes UI components as atoms, molecules, organisms, and templates. Emo uses a similar set of categories: elements, molecules, and organisms. In order for a component to show up in the generated style-guide, it must be placed in one of these categories.
+Emo was inspired by [pattern lab](http://patternlab.io/), which categorizes UI components as atoms, molecules, organisms, templates, and pages. Emo uses a similar set of categories: elements, molecules, and organisms. In order for a component to show up in the generated style-guide, it must be placed in one of these categories.
 
 ### Elements
 
