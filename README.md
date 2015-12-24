@@ -235,15 +235,13 @@ The previous examples show name/value combinations within CSS comments. Emo is c
 //
 //-------------------------------------------------
 
-*/
-
 .btn {
     color: blue;
 }
 
 ```
 
-```markup
+```html
 
 <!--
 
