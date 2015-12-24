@@ -8,7 +8,7 @@
             return;
         }
 
-        this.obj = {};
+        this.components = [];
         this.mess = mess[0].match(regexs.sections);
         this.keys = [];
         this.values = [];
@@ -21,8 +21,11 @@
     proto.sweep = function() {
         var keys;
         var values;
+        var count = 0;
 
-        this.mess.forEach(function(section) {
+        this.mess.forEach(function(section, i) {
+            this.components[count] = {};
+
             keys = section.match(regexs.keys);
             values = section.match(regexs.values);
 
@@ -32,13 +35,19 @@
 
             this.addKeys(keys);
             this.addValues(values);
-
-            this.keys.forEach(function(key, i) {
-                this.obj[key] = this.values[i];
-            }.bind(this));
         }.bind(this));
 
-        return this.obj;
+        this.keys.forEach(function(key, i) {
+            if (this.components[count].hasOwnProperty(key)) {
+                count++;
+
+                this.components[count] = {};
+            }
+
+            this.components[count][key] = this.values[i];
+        }.bind(this));
+
+        return this.components;
     };
 
     proto.addKeys = function(keys) {

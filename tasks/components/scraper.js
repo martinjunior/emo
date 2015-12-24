@@ -5,7 +5,7 @@
     var path = require('path');
     var marked = require('marked');
     var regex = require('../utils/regexs');
-    var Janitor = require('./janitor');
+    var Janitor = require('./Janitor');
     var fileExists = require('../utils/fileExists');
     var merge = require('../utils/merge');
 
@@ -14,13 +14,13 @@
 
         this.components = [];
 
-        return this.scrape();
+        return this.init();
     };
 
     var proto = Scraper.prototype;
 
-    proto.scrape = function() {
-        this.files.forEach(this.addComponent.bind(this));
+    proto.init = function() {
+        this.files.forEach(this.scrape.bind(this));
 
         return this;
     };
@@ -29,71 +29,78 @@
         return this.components;
     };
 
-    proto.addComponent = function(item) {
+    proto.scrape = function(item) {
         var src = item.src[0];
         var options = { encoding: 'utf8' };
         var basepath = src.replace(path.basename(src), '');
         var extname = path.extname(src).replace(/./, '');
         var content = fs.readFileSync(src, options);
-        var data = new Janitor(content.match(regex.docs));
+        var components = new Janitor(content.match(regex.docs));
+
+        components.forEach(function(component) {
+            this.add(component, options, basepath);
+        }.bind(this));
+    };
+
+    proto.add = function(component, options, basepath) {
         var keys;
 
-        if (!this.componentIsValid(data)) {
+        if (!this.isValid(component)) {
             return;
         }
 
-        keys = Object.keys(data);
+        keys = Object.keys(component);
 
         keys.forEach(function(key) {
-            if (key === 'name' || key === 'category') {
+            if (key !== 'description') {
                 return;
             }
 
-            data[key] = data[key].match(regex.html_file)
-                      ? fs.readFileSync(basepath + data[key], options)
-                      : data[key].match(regex.markdown_file)
-                      ? marked(fs.readFileSync(basepath + data[key], options))
-                      : marked(data[key]);
+            component[key] = component[key].match(regex.html_file)
+                             ? fs.readFileSync(basepath + component[key], options)
+                             : component[key].match(regex.markdown_file)
+                             ? marked(fs.readFileSync(basepath + component[key], options))
+                             : marked(component[key]);
         });
 
-        if (this.componentExists(data)) {
-            this.mergeComponent(data);
+        if (this.exists(component)) {
+            this.merge(component);
 
             return;
         }
 
-        this.components.push(data);
+        this.components.push(component);
     };
 
-    proto.mergeComponent = function(componentToMerge) {
-        var name = componentToMerge.name;
+    proto.merge = function(component) {
+        var name = component.name;
 
-        this.components.some(function(component, i) {
-            if (name !== component.name) {
+        this.components.some(function(target, i) {
+            if (name !== target.name) {
                 return false;
             }
 
-            this.components[i] = merge(component, componentToMerge);
+            this.components[i] = merge(target, component);
 
             return true;
         }.bind(this));
     };
 
-    proto.componentIsValid = function(component) {
+    proto.isValid = function(component) {
         return component && component.category && component.name && component.description;
     };
 
-    proto.componentExists = function(providedComponent) {
-        var componentExists = false;
-        var name = providedComponent.name;
+    proto.exists = function(component) {
+        var name = component.name;
+        var exists = false;
 
         this.components.some(function(component) {
-            componentExists = component.name === name;
+            exists = component.name === name;
 
-            return componentExists;
+            return exists;
         });
 
-        return componentExists;
+        return exists;
     };
 
     module.exports = Scraper;
