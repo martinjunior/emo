@@ -24,61 +24,126 @@ In your project's Gruntfile, add a section named `emo` to the data object passed
 
 ```js
 grunt.initConfig({
-  emo: {
-    options: {
-      // Task-specific options go here.
-    },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
-  },
+    emo: {
+        main: {
+            options: {
+                path: { ... },
+                copy: {
+                    'assets/css/modern.css': 'web/assets/css/modern.css'
+                }
+            },
+            files: [
+                {
+                    expand: true,
+                    cwd: '',
+                    src: [
+                        'assets/scss/**/*.scss',
+                        'assets/scss/**/*.less',
+                        'assets/css/**/*.css'
+                    ]
+                }
+            ]
+        }
+    }
 });
 ```
 
 ### Options
 
-#### options.separator
+#### options.path
+Type: `Object`
+Default value: `{ src: '_styleguide/', dest: 'docs/styleguide/' }`
+
+Paths used by the style-guide generator
+
+#### options.path.src
 Type: `String`
-Default value: `',  '`
+Default value: `_styleguide/`
 
-A string value that is used to do something with whatever.
+The location the styleguide source code is to be placed. Must include a trailing slash.
 
-#### options.punctuation
+#### options.path.dest
 Type: `String`
-Default value: `'.'`
+Default value: `docs/styleguide/`
 
-A string value that is used to do something else with whatever else.
+The location the styleguide will be built to. Must include a trailing slash.
+
+#### options.copy
+Type: `Object`
+Default value: `undefined`
+
+An object containing assets that should be copied over to the style-guide destination folder.
+
+Note the example below. The right hand assignment is the path to the asset that should be copied; the left hand assignment is the path to where the asset should be copied to within the style-guide destination folder.
+
+```js
+grunt.initConfig({
+    emo: {
+        main: {
+            options: {
+                copy: {
+                    'assets/css/modern.css': 'web/assets/css/modern.css'
+                }
+            }
+        }
+    }
+});
+```
 
 ### Usage Examples
 
 #### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
 
 ```js
 grunt.initConfig({
-  emo: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
+    emo: {
+        main: {
+            options: {
+                copy: {
+                    'assets/css/modern.css': 'web/assets/css/modern.css'
+                }
+            },
+            files: [
+                {
+                    expand: true,
+                    cwd: '',
+                    src: [
+                        'assets/scss/**/*.scss'
+                    ]
+                }
+            ]
+        }
+    }
 });
 ```
 
 #### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+Below, emo is configured to output the style-guide as well as its source in a custom location.
 
 ```js
 grunt.initConfig({
-  emo: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
+    emo: {
+        main: {
+            options: {
+                path: {
+                    src: 'some/path/',
+                    dest: 'styleguide/'
+                },
+                copy: {
+                    'assets/css/modern.css': 'web/assets/css/modern.css'
+                }
+            },
+            files: [
+                {
+                    expand: true,
+                    cwd: '',
+                    src: [
+                        'assets/scss/**/*.scss'
+                    ]
+                }
+            ]
+        }
+    }
 });
 ```
 
