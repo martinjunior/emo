@@ -151,7 +151,7 @@ grunt.initConfig({
 
 ## Documentation Syntax
 
-Emo searches for name/value combinations within your source files. Note that the all values are parsed as markdown. Name/value combinations are expected to take the following format.
+Emo searches for name/value combinations within your source files, which are then used within the `component.html` Swig template. Note that the all values are parsed as markdown. Name/value combinations are expected to take the following format.
 
 ```scss
 
@@ -205,13 +205,57 @@ As previously mentioned, emo can accept any number of name/value combinations, t
 
     `Author: Michael Jordan`
 
-    `Description: relative/path/to/markdown-file.md`
+    `Description: relative/path/to/btn_docs.md`
 
 */
 
 .btn {
     color: blue;
 }
+
+```
+
+The previous examples show name/value combinations within CSS comments. Emo is capable of scraping documention from within all comment types:
+
+```scss
+
+//-------------------------------------------------
+// Btn
+//-------------------------------------------------
+//
+//  `Name: Btn`
+//
+//  `Category: Btn`
+//
+//  `Version: 1.0.0`
+//
+//  `Author: Michael Jordan`
+//
+//  `Description: relative/path/to/btn_docs.md`
+//
+//-------------------------------------------------
+
+*/
+
+.btn {
+    color: blue;
+}
+
+```
+
+```markup
+
+<!--
+
+    `Name: Btn`
+
+    `Category: elements`
+
+    `Description: <button class="btn">Im' a button</button>`
+
+-->
+
+<button class="btn">Im' a button</button>
 
 ```
 
