@@ -159,7 +159,7 @@ Emo searches for name/value combinations within your source files; these name/va
 
     {% Name: Btn %}
 
-    {% Category: Btn %}
+    {% Category: elements %}
 
     {% Description: <button>I'm a button</button> %}
 
@@ -179,7 +179,7 @@ Specifically, each name/pair value is expected to be enclosed within `{%%}` mark
 
     {% Name: Btn %}
 
-    {% Category: Btn %}
+    {% Category: elements %}
 
     {% Description: relative/path/to/markdown-file.md %}
 
@@ -199,7 +199,7 @@ As previously mentioned, emo can accept any number of name/value combinations, t
 
     {% Name: Btn %}
 
-    {% Category: Btn %}
+    {% Category: elements %}
 
     {% Version: 1.0.0 %}
 
@@ -225,7 +225,7 @@ The previous examples show name/value combinations within CSS comments. Emo is c
 //
 //  {% Name: Btn %}
 //
-//  {% Category: Btn %}
+//  {% Category: elements %}
 //
 //  {% Version: 1.0.0 %}
 //
