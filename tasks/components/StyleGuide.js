@@ -112,8 +112,12 @@
             var filepath = this.options.path.dest + key;
             var content = this.grunt.file.read(this.options.copy[key]);
 
+            this.grunt.log.writeln('Creating ' + filepath);
+
             this.grunt.file.write(filepath, content);
         }.bind(this));
+
+        this.grunt.log.writeln('-----------------------------------');
     };
 
     proto.build = function() {
@@ -153,7 +157,6 @@
             );
         }.bind(this));
 
-        this.grunt.log.writeln('-----------------------------------');
         this.grunt.log.writeln('Documented ' + this.components.length + ' component(s)');
     };
 
