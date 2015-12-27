@@ -152,6 +152,9 @@
                 swig.compileFile('component.html')(data)
             );
         }.bind(this));
+
+        this.grunt.log.writeln('-----------------------------------');
+        this.grunt.log.writeln('Documented ' + this.components.length + ' component(s)');
     };
 
     module.exports = StyleGuide;

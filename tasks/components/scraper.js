@@ -35,7 +35,7 @@
         var basepath = src.replace(path.basename(src), '');
         var extname = path.extname(src).replace(/./, '');
         var content = fs.readFileSync(src, options);
-        var components = new Janitor(content.match(regex.docs));
+        var components = new Janitor(content.match(regex.docs)).get();
 
         components.forEach(function(component) {
             this.add(component, options, basepath);

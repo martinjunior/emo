@@ -4,12 +4,14 @@
     var regexs = require('../utils/regexs');
 
     var Janitor = function(mess) {
+        this.components = [];
+
         if (!mess) {
             return;
         }
 
-        this.components = [];
         this.keys = [];
+
         this.values = [];
 
         this.mess = mess[0].match(regexs.sections).map(function(item) {
@@ -22,6 +24,10 @@
     };
 
     var proto = Janitor.prototype;
+
+    proto.get = function() {
+        return this.components;
+    };
 
     proto.sweep = function() {
         var keys;
