@@ -20,7 +20,7 @@
                        .trim();
         });
 
-        return this.sweep();
+        this.sweep();
     };
 
     var proto = Janitor.prototype;
@@ -59,8 +59,6 @@
 
             this.components[count][key] = this.values[i];
         }.bind(this));
-
-        return this.components;
     };
 
     proto.addKeys = function(keys) {
