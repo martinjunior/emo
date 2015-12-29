@@ -13,27 +13,21 @@
         <link rel="stylesheet" href="{{ pathToRoot }}assets/css/styleguide.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.css">
     </head>
-    <body class="language-markup">
+    <body>
 
-        {% if component.category != 'organisms' %}
-            <div class="sg-page">
+        <div class="sg-page">
 
-                <div class="sg-page-hd">
-                    {% include 'partials/_nav.html' %}
-                </div>
-
-                <div class="sg-page-bd">
-                    <div class="sg-wrapper">
-                        {% block content %}{% endblock %}
-                    </div>
-                </div>
-
+            <div class="sg-page-hd">
+                {% include 'partials/_nav.html' %}
             </div>
-        {% endif %}
 
-        {% if component.category == 'organisms' %}
-            {% block content %}{% endblock %}
-        {% endif %}
+            <div class="sg-page-bd">
+                <div class="sg-wrapper">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+
+        </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.js"></script>
 

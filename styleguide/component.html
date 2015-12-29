@@ -2,21 +2,15 @@
 
 {% block content %}
 
-    {% if component.category != 'organisms' %}
-        <div class="sg-component">
-            <div class="sg-component-box">
-                <h2 class="sg-hdg">{{ component.name | title }}</h2>
-            </div>
-            <div class="sg-component-box">
-                <div class="sg-userContent">
-                    {% autoescape false %}{{ component.description }}{% endautoescape %}
-                </div>
+    <div class="sg-component">
+        <div class="sg-component-box">
+            <h2 class="sg-hdg">{{ component.name | title }}</h2>
+        </div>
+        <div class="sg-component-box">
+            <div class="sg-userContent">
+                {% autoescape false %}{{ component.description }}{% endautoescape %}
             </div>
         </div>
-    {% endif %}
-
-    {% if component.category == 'organisms' %}
-        {% autoescape false %}{{ component.description }}{% endautoescape %}
-    {% endif %}
+    </div>
 
 {% endblock %}

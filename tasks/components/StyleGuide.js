@@ -17,12 +17,37 @@
      * @param {Object} options
      */
     var StyleGuide = function(grunt, files, options) {
+
+        /**
+         * Grunt (http://gruntjs.com/api/grunt)
+         *
+         * @property styleGuide.grunt
+         * @type {Object}
+         */
         this.grunt = grunt;
 
+        /**
+         * A list of files to scrape
+         * for component documentation
+         *
+         * @property styleGuide.files
+         * @type {Object}
+         */
         this.files = files;
 
-        this.options = merge(OPTIONS, options);
+        /**
+         * @property styleGuide.options
+         * @type {Object}
+         */
+        this.options = merge(StyleGuide.OPTIONS, options);
 
+        /**
+         * A list of components that will
+         * be used to render the style-guide
+         *
+         * @property styleGuide.components
+         * @type {Object}
+         */
         this.components = new Scraper(this.files).get().map(function(component) {
             var file = component.name.toLowerCase().replace(/[ \/]/g, '-').trim();
 
@@ -36,12 +61,19 @@
 
     var proto = StyleGuide.prototype;
 
-    var OPTIONS = {
+    /**
+     * @property StyleGuide.OPTIONS
+     * @type {Object}
+     * @static
+     * @final
+     */
+    StyleGuide.OPTIONS = {
         path: {
             _src: __dirname + '/../../styleguide/',
             src: '_styleguide/',
             dest: 'docs/styleguide/'
-        }
+        },
+        categories: ['elements', 'molecules', 'organisms']
     };
 
     /**
@@ -120,15 +152,26 @@
         this.grunt.log.writeln('-----------------------------------');
     };
 
+    /**
+     * Build the style-guide
+     * 
+     * @method styleGuide.build
+     */
     proto.build = function() {
         this.buildIndex();
         this.buildComponents();
     };
 
+    /**
+     * Build the style-guide's index.html
+     * 
+     * @method styleGuide.buildIndex
+     */
     proto.buildIndex = function() {
         var data = {
             components: this.components,
-            pathToRoot: ''
+            pathToRoot: '',
+            categories: this.options.categories
         };
 
         this.grunt.file.write(
@@ -137,17 +180,24 @@
         );
     };
 
+    /**
+     * Build the style-guide's
+     * component pages
+     * 
+     * @method styleGuide.buildComponents
+     */
     proto.buildComponents = function() {
-        var data; // the data we're passing to Swig
-        var directory; // where, within the basePath, are we putting this file?
         var basePath = this.options.path.dest;
 
         this.components.forEach(function(component) {
-            directory = component.category.toLowerCase() + '/';
+            // where, within the basePath, are we putting this file?
+            var directory = component.category.toLowerCase() + '/';
 
-            data = {
+            // the data we're passing to Swig
+            var data = {
                 components: this.components,
                 component: component,
+                categories: this.options.categories,
                 pathToRoot: '../'
             };
 
