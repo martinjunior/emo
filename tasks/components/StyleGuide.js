@@ -42,6 +42,24 @@
         this.options = merge(StyleGuide.OPTIONS, options);
 
         /**
+         * The title of the style-guide
+         * 
+         * @property styleGuide.title
+         * @type {Object}
+         */
+        this.title = this.options.title || this.options.categories.join(' ');
+
+        /**
+         * The abbreviation of the style-guide
+         * 
+         * @property styleGuide.abbr
+         * @type {Object}
+         */
+        this.abbr = this.options.abbr || this.options.categories.map(function(category) {
+            return category[0].toUpperCase() + '.';
+        }).join('');
+
+        /**
          * A list of components that will
          * be used to render the style-guide
          *
@@ -169,6 +187,8 @@
      */
     proto.buildIndex = function() {
         var data = {
+            title: this.title,
+            abbr: this.abbr,
             components: this.components,
             pathToRoot: '',
             categories: this.options.categories
@@ -195,6 +215,8 @@
 
             // the data we're passing to Swig
             var data = {
+                title: this.title,
+                abbr: this.abbr,
                 components: this.components,
                 component: component,
                 categories: this.options.categories,

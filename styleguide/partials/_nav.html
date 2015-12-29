@@ -1,20 +1,22 @@
 <div class="sg-masthead">
     <div class="sg-masthead-hd">
         <h1 class="sg-hdg sg-hdg_1">
-            <abbr title="Elements Molecules Organisms">E.M.O.</abbr>
+            <a href="{{ pathToRoot }}index.html">
+                <abbr title="{{ title }}">{{ abbr }}</abbr>
+            </a>
         </h1>
     </div>
     <nav class="sg-masthead-bd">
         <ul class="sg-nav">
             {% for category in categories %}
                 <li>
-                    <strong>{{ category }}</strong>
+                    <strong>{{ category | title }}</strong>
                     <ul class="sg-nav-menu">
                         {% for component in components %}
                             {% if component.category == category %}
                             <li>
                                 <a href="{{ pathToRoot }}{{ component.category }}/{{ component.file }}">
-                                    {{ component.name }}
+                                    {{ component.name | title }}
                                 </a>
                             </li>
                             {% endif %}
