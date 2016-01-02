@@ -78,6 +78,24 @@ An object containing assets that should be copied over to the style-guide destin
 
 Note the example below. The right hand assignment is the path to the asset that should be copied; the left hand assignment is the path to where the asset should be copied to within the style-guide destination folder.
 
+#### options.categories
+Type: `Array`
+Default value: `['elements', 'molecules', 'organisms']`
+
+An array containing the categories under which components will appear. Understand that components must fit into a specified category in order to show up in the style-guide.
+
+#### options.title
+Type: `String`
+Default value: `elements molecules organisms`
+
+The title of the style-guide.
+
+#### options.abbr
+Type: `String`
+Default value: `E.M.O.`
+
+The abbreviated style-guide title. This is used as the style-guides display name, by default.
+
 ```js
 grunt.initConfig({
     emo: {
@@ -259,7 +277,7 @@ The previous examples show name/value combinations within CSS comments. Emo is c
 
 ## Categories
 
-Emo was inspired by [pattern lab](http://patternlab.io/), which categorizes UI components as atoms, molecules, organisms, templates, and pages. Emo uses a similar set of categories: elements, molecules, and organisms. In order for a component to show up in the generated style-guide, it must be placed in one of these categories.
+Emo was inspired by [pattern lab](http://patternlab.io/), which categorizes UI components as atoms, molecules, organisms, templates, and pages. By default, emo uses a similar set of categories: elements, molecules, and organisms. In order for a component to show up in the generated style-guide, it must be placed in one of these categories. Know that these categories can be replaced via the `categories` options.
 
 ### Elements
 
