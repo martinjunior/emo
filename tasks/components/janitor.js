@@ -20,7 +20,7 @@
                        .trim();
         });
 
-        this.sweep();
+        this.sweep(this.mess);
     };
 
     var proto = Janitor.prototype;
@@ -29,18 +29,16 @@
         return this.components;
     };
 
-    proto.sweep = function() {
-        var keys;
-        var values;
+    proto.sweep = function(mess) {
         var count = 0;
 
-        this.mess.forEach(function(section, i) {
+        mess.forEach(function(section, i) {
+            var keys = section.match(regexs.keys);
+            var values = section.match(regexs.values);
+
             this.components[count] = {};
 
-            keys = section.match(regexs.keys);
-            values = section.match(regexs.values);
-
-            if (!(keys && keys.forEach) || !(values && values.forEach && values.length === 2)) {
+            if (!keys || !(values && values.length === 2)) {
                 return;
             }
 

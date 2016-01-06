@@ -4,7 +4,6 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
-    background: #ffffff;
 }
 
 .sg-page-hd {
@@ -16,7 +15,7 @@ body {
     overflow: auto;
     border-right: 1px solid #f1f1f1;
     background: #ffffff;
-    box-shadow: 0px 2px 2px rgba(241, 241, 241, 0.8)
+    box-shadow: 0px 2px 2px rgba(241, 241, 241, 0.8);
 }
 
 .sg-page-bd {
@@ -48,7 +47,7 @@ body {
 }
 
 .sg-component > * + * {
-    border-top: 1px solid #cbcbcb;
+    border-top: 1px solid #f1f1f1;
 }
 
 .sg-component-box {
@@ -63,50 +62,53 @@ body {
     font-size: 28px;
 }
 
-.sg-userContent > h1,
-.sg-userContent > h2,
-.sg-userContent > h3 {
+.sg-userContent > h1:not([class]),
+.sg-userContent > h2:not([class]),
+.sg-userContent > h3:not([class]) {
     font-size: 24px;
 }
 
-.sg-userContent > h4 {
+.sg-userContent > h4:not([class]) {
     font-size: 20px;
 }
 
-.sg-userContent > ul {
+.sg-userContent > ul:not([class]) {
     margin-left: 30px;
 }
 
-.sg-userContent > ul li {
+.sg-userContent > ul:not([class]) li {
     list-style-type: disc;
 }
 
-.sg-userContent > hr {
+.sg-userContent > hr:not([class]) {
     height: 1px;
     margin-top: 30px;
     margin-bottom: 30px;
     border: none;
-    background: #b1b1b1;
+    background: #f1f1f1;
 }
 
 .sg-userContent > * + * {
     margin-top: 20px;
 }
 
-pre,
+.sg-example {
+    padding: 20px;
+    border-radius: 2px;
+    border: 1px solid #f1f1f1;
+}
+
 code {
     padding: 2px;
     border-radius: 2px;
-    background: #333;
-    color: #f1f1f1;
-}
-
-pre {
-    padding: 20px;
-    overflow: auto;
+    background: #333333;
+    color: white;
+    line-height: 1.5;
 }
 
 pre code {
-    padding: 0;
-    background: none;
+    padding: initial;
+    border-radius: initial;
+    background: initial;
+    line-height: initial;
 }

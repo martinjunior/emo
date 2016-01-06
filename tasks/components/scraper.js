@@ -14,13 +14,31 @@
 
         this.components = [];
 
-        return this.init();
+        this.init();
+    };
+
+    Scraper.OPTIONS = {
+        encoding: 'utf8'
     };
 
     var proto = Scraper.prototype;
 
     proto.init = function() {
-        this.files.forEach(this.scrape.bind(this));
+        var components = this.files.map(this.scrape.bind(this));
+
+        components.forEach(function(componentList) {
+            if (componentList.length === 0) {
+                return;
+            }
+
+            componentList.forEach(function(component) {
+                if (!this.isValid(component)) {
+                    return;
+                }
+
+                this.add(this.process(component));
+            }.bind(this));
+        }.bind(this));
 
         return this;
     };
@@ -29,40 +47,37 @@
         return this.components;
     };
 
-    proto.scrape = function(item) {
-        var src = item.src[0];
-        var options = { encoding: 'utf8' };
-        var basepath = src.replace(path.basename(src), '');
-        var extname = path.extname(src).replace(/./, '');
-        var content = fs.readFileSync(src, options);
+    proto.scrape = function(src) {
+        var basename = path.basename(src);
+        var basepath = src.replace(basename, '');
+        var content = fs.readFileSync(src, Scraper.OPTIONS);
         var components = new Janitor(content.match(regex.docs)).get();
 
-        components.forEach(function(component) {
-            this.add(component, options, basepath);
-        }.bind(this));
+        return components.map(function(component) {
+            var filename = component.name.toLowerCase().replace(/[ \/]/g, '-').trim();
+
+            return merge(component, {
+                _basepath: basepath,
+                _basename: filename + '.html'
+            });
+        });
     };
 
-    proto.add = function(component, options, basepath) {
-        var keys;
+    proto.process = function(component) {
+        var description = component.description;
+        var isFile = description.match(regex.markdown_file);
+        var basepath = component._basepath;
 
-        if (!this.isValid(component)) {
-            return;
-        }
+        component.description = marked(
+            isFile
+            ? fs.readFileSync(basepath + description, Scraper.OPTIONS)
+            : description
+        );
 
-        keys = Object.keys(component);
+        return component;
+    }
 
-        keys.forEach(function(key) {
-            if (key !== 'description') {
-                return;
-            }
-
-            component[key] = component[key].match(regex.html_file)
-                             ? fs.readFileSync(basepath + component[key], options)
-                             : component[key].match(regex.markdown_file)
-                             ? marked(fs.readFileSync(basepath + component[key], options))
-                             : marked(component[key]);
-        });
-
+    proto.add = function(component) {
         if (this.exists(component)) {
             this.merge(component);
 

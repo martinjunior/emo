@@ -13,7 +13,7 @@
      * Style-guide generator
      * 
      * @param {Object} grunt
-     * @param {Object} files files to scrape
+     * @param {Object} files files to copy
      * @param {Object} options
      */
     var StyleGuide = function(grunt, files, options) {
@@ -27,8 +27,8 @@
         this.grunt = grunt;
 
         /**
-         * A list of files to scrape
-         * for component documentation
+         * A list of files to copy
+         * over to the styleguide dest
          *
          * @property styleGuide.files
          * @type {Object}
@@ -40,6 +40,15 @@
          * @type {Object}
          */
         this.options = merge(StyleGuide.OPTIONS, options);
+
+        /**
+         * Files to scrape for component data
+         *
+         * @property styleGuide.filesToScrape
+         * @type {Array}
+         * @default []
+         */
+        this.filesToScrape = this.grunt.file.expand(this.options.scrape);
 
         /**
          * The title of the style-guide
@@ -55,9 +64,11 @@
          * @property styleGuide.abbr
          * @type {Object}
          */
-        this.abbr = this.options.abbr || this.options.categories.map(function(category) {
-            return category[0].toUpperCase() + '.';
-        }).join('');
+        this.abbr = this.options.abbr || this.options.categories.map(
+            function(category) {
+                return category[0].toUpperCase() + '.';
+            }
+        ).join('');
 
         /**
          * A list of components that will
@@ -66,13 +77,7 @@
          * @property styleGuide.components
          * @type {Object}
          */
-        this.components = new Scraper(this.files).get().map(function(component) {
-            var file = component.name.toLowerCase().replace(/[ \/]/g, '-').trim();
-
-            component.file = file + '.html';
-
-            return component;
-        });
+        this.components = new Scraper(this.filesToScrape).get();
 
         this.init();
     };
@@ -91,7 +96,8 @@
             src: '_styleguide/',
             dest: 'docs/styleguide/'
         },
-        categories: ['elements', 'molecules', 'organisms']
+        categories: ['elements', 'molecules', 'organisms'],
+        scrape: []
     };
 
     /**
@@ -143,31 +149,20 @@
      * @method styleGuide.copy
      */
     proto.copy = function() {
-        // copy over styleguide.css
-        this.grunt.file.write(
-            this.options.path.dest + 'assets/css/styleguide.css',
-            this.grunt.file.read(
-                this.options.path.src + 'assets/css/styleguide.css'
-            )
-        );
+        this.files.filter(function(file) {
+            var src = file.src[0];
+            var isFile = fs.lstatSync(src).isFile();
 
-        if (!this.options.copy) {
-            return;
-        }
+            return isFile;
+        }).forEach(function(file) {
+            var src = file.src[0];
+            var dest = file.dest;
 
-        var keys = Object.keys(this.options.copy);
-
-        // copy assets specified in options.copy
-        keys.forEach(function(key) {
-            var filepath = this.options.path.dest + key;
-            var content = this.grunt.file.read(this.options.copy[key]);
-
-            this.grunt.log.writeln('Creating ' + filepath);
-
-            this.grunt.file.write(filepath, content);
+            this.grunt.file.write(
+                file.dest,
+                this.grunt.file.read(src)
+            );
         }.bind(this));
-
-        this.grunt.log.writeln('-----------------------------------');
     };
 
     /**
@@ -207,10 +202,10 @@
      * @method styleGuide.buildComponents
      */
     proto.buildComponents = function() {
-        var basePath = this.options.path.dest;
+        var basepath = this.options.path.dest;
 
         this.components.forEach(function(component) {
-            // where, within the basePath, are we putting this file?
+            // where, within the basepath, are we putting this file?
             var directory = component.category.toLowerCase() + '/';
 
             // the data we're passing to Swig
@@ -224,7 +219,7 @@
             };
 
             this.grunt.file.write(
-                basePath + directory + component.file,
+                basepath + directory + component._basename,
                 swig.compileFile('component.html')(data)
             );
         }.bind(this));
