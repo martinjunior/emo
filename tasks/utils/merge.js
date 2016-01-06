@@ -2,7 +2,7 @@
     'use strict';
 
     /**
-     * Merges objects
+     * Merges two objects
      *
      * @param {Object} target
      * @param {Object} src
