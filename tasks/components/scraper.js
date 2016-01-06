@@ -5,7 +5,7 @@
     var path = require('path');
     var marked = require('marked');
     var regex = require('../utils/regexs');
-    var Janitor = require('./Janitor');
+    var janitor = require('./janitor');
     var fileExists = require('../utils/fileExists');
     var merge = require('../utils/merge');
 
@@ -27,10 +27,6 @@
         var components = this.files.map(this.scrape.bind(this));
 
         components.forEach(function(componentList) {
-            if (componentList.length === 0) {
-                return;
-            }
-
             componentList.forEach(function(component) {
                 if (!this.isValid(component)) {
                     return;
@@ -51,21 +47,22 @@
         var basename = path.basename(src);
         var basepath = src.replace(basename, '');
         var content = fs.readFileSync(src, Scraper.OPTIONS);
-        var components = new Janitor(content.match(regex.docs)).get();
+        var mess = content.match(regex.docs);
+        var components = janitor.clean(mess ? mess[0] : null);
 
         return components.map(function(component) {
-            var filename = component.name.toLowerCase().replace(/[ \/]/g, '-').trim();
+            var filename = component.name.toLowerCase().replace(regex.spacesAndSlashes, '-').trim();
 
             return merge(component, {
                 _basepath: basepath,
-                _basename: filename + '.html'
+                file: filename + '.html'
             });
         });
     };
 
     proto.process = function(component) {
         var description = component.description;
-        var isFile = description.match(regex.markdown_file);
+        var isFile = description.match(regex.markdownFile);
         var basepath = component._basepath;
 
         component.description = marked(

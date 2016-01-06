@@ -136,7 +136,7 @@
             }
 
             content = this.grunt.file.read(file);
-            filepath = this.options.path.src + file.replace(regex.styleguide_src_path, '');
+            filepath = this.options.path.src + file.replace(regex.styleguideSrcPath, '');
 
             this.grunt.file.write(filepath, content);
         }.bind(this));
@@ -207,6 +207,7 @@
         this.components.forEach(function(component) {
             // where, within the basepath, are we putting this file?
             var directory = component.category.toLowerCase() + '/';
+            var template = component.template || 'component.html';
 
             // the data we're passing to Swig
             var data = {
@@ -219,8 +220,8 @@
             };
 
             this.grunt.file.write(
-                basepath + directory + component._basename,
-                swig.compileFile('component.html')(data)
+                basepath + directory + component.file,
+                swig.compileFile(template)(data)
             );
         }.bind(this));
 
