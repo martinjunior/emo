@@ -8,11 +8,23 @@
      * @type {Object}
      */
     module.exports = {
-        docs: /\{%[\s\S]+%}/g,
-        component: /\{%([^\{%]+|[^\%}]+)%}/g,
+        docs: function(open, close) {
+            var pattern = open + '[\\s\\S]+' + close;
+
+            return new RegExp(pattern ,'g');
+        },
+
+        delimiter: function(delimiter) {
+            return new RegExp(delimiter);
+        },
+
+        component: function(open, close) {
+            var pattern = open + '([^' + open + ']+|[^' + close + ']+)' + close;
+
+            return new RegExp(pattern, 'g');
+        },
+
         comments: /\/\/ ?/g,
-        commentTagOpen: /\{%/,
-        commentTagClose: /\%}/,
         sections: /[:](?:[ \n]+)/,
         markdownFile: /.md$/g,
         styleguideSrcPath: /[A-Za-z\/\-_]+\/styleguide\//,

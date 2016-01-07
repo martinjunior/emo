@@ -9,21 +9,28 @@
     var fileExists = require('../utils/fileExists');
     var merge = require('../utils/merge');
 
-    var Scraper = function(files) {
+    var Scraper = function(files, options) {
         this.files = files;
 
         this.components = [];
+
+        this.options = merge(Scraper.OPTIONS, options);
 
         this.init();
     };
 
     Scraper.OPTIONS = {
-        encoding: 'utf8'
+        readFileSync: {
+            encoding: 'utf8'
+        },
+        delimiters: ['{{', '}}']
     };
 
     var proto = Scraper.prototype;
 
     proto.init = function() {
+        janitor.delimiters = this.options.delimiters;
+
         var components = this.files.map(this.scrape.bind(this));
 
         components.forEach(function(componentList) {
@@ -46,8 +53,8 @@
     proto.scrape = function(src) {
         var basename = path.basename(src);
         var basepath = src.replace(basename, '');
-        var content = fs.readFileSync(src, Scraper.OPTIONS);
-        var mess = content.match(regex.docs);
+        var content = fs.readFileSync(src, this.options.readFileSync);
+        var mess = content.match(regex.docs(this.options.delimiters[0], this.options.delimiters[1]));
         var components = janitor.clean(mess ? mess[0] : null);
 
         return components.map(function(component) {
@@ -67,7 +74,7 @@
 
         component.description = marked(
             isFile
-            ? fs.readFileSync(basepath + description, Scraper.OPTIONS)
+            ? fs.readFileSync(basepath + description, this.options.readFileSync)
             : description
         );
 

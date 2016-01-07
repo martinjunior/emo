@@ -3,7 +3,9 @@
 
     var regexs = require('../utils/regexs');
 
-    var janitor = {};
+    var janitor = {
+        delimiters: ['{{', '}}']
+    };
 
     janitor.clean = function(mess) {
         return janitor.mop(janitor.sweep(mess));
@@ -14,9 +16,9 @@
             return;
         }
 
-        return mess.match(regexs.component).map(function(item) {
-            return item.replace(regexs.commentTagOpen, '')
-                       .replace(regexs.commentTagClose, '')
+        return mess.match(regexs.component(janitor.delimiters[0], janitor.delimiters[1])).map(function(item) {
+            return item.replace(regexs.delimiter(janitor.delimiters[0]), '')
+                       .replace(regexs.delimiter(janitor.delimiters[1]), '')
                        .trim();
         })
     };

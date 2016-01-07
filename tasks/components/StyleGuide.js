@@ -77,7 +77,9 @@
          * @property styleGuide.components
          * @type {Object}
          */
-        this.components = new Scraper(this.filesToScrape).get();
+        this.components = new Scraper(this.filesToScrape, {
+            delimiters: this.options.delimiters
+        }).get();
 
         this.init();
     };
@@ -97,7 +99,8 @@
             dest: 'docs/styleguide/'
         },
         categories: ['elements', 'molecules', 'organisms'],
-        scrape: []
+        scrape: [],
+        delimiters: ['{{', '}}']
     };
 
     /**
