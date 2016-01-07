@@ -45,10 +45,7 @@
             }
 
             keys.push(key.toLowerCase());
-
-            values.push(
-                value.replace(regexs.comments, '')
-            );
+            values.push(value);
         }.bind(this));
 
         keys.forEach(function(key, i) {

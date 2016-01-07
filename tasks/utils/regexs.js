@@ -24,7 +24,6 @@
             return new RegExp(pattern, 'g');
         },
 
-        comments: /\/\/ ?/g,
         sections: /[:](?:[ \n]+)/,
         markdownFile: /.md$/g,
         styleguideSrcPath: /[A-Za-z\/\-_]+\/styleguide\//,
