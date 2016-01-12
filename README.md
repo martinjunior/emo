@@ -203,6 +203,28 @@ version: 1.0.0
 
 Emo expects that contents of documentation blocks to be written in YAML. See the [YAML reference card](http://www.yaml.org/refcard.html) for more information.
 
+## Loading External Documentation
+
+As inline documentation is not always preferred, emo makes it possible to load external markdown files. External file paths should be written relatively. Know that emo parses all property values as markdown.
+
+```scss
+/*
+
+---doc
+
+name: Btn
+
+category: elements
+
+description: relative/path/to/btn_docs.md
+
+---
+
+*/
+
+.btn { ... }
+```
+
 ## Categories
 
 Emo was inspired by [pattern lab](http://patternlab.io/), which categorizes UI components as atoms, molecules, organisms, templates, and pages. By default, emo uses a similar set of categories: elements, molecules, and organisms. In order for a component to show up in the generated style-guide, it must be placed in one of these categories. Know that these categories can be replaced via the `categories` options.
