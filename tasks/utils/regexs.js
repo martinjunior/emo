@@ -8,23 +8,11 @@
      * @type {Object}
      */
     module.exports = {
-        docs: function(open, close) {
-            var pattern = open + '[\\s\\S]+' + close;
-
-            return new RegExp(pattern ,'g');
+        docs: /[-]{3}doc[\s\S]+[-]{3}/g,
+        delimiter: {
+            open: /^[-]{3}docs/,
+            close: /[-]{3}$/
         },
-
-        delimiter: function(delimiter) {
-            return new RegExp(delimiter);
-        },
-
-        component: function(open, close) {
-            var pattern = open + '([^' + open + ']+|[^' + close + ']+)' + close;
-
-            return new RegExp(pattern, 'g');
-        },
-
-        sections: /[:](?:[ \n]+)/,
         markdownFile: /.md$/g,
         styleguideSrcPath: /[A-Za-z\/\-_]+\/styleguide\//,
         spacesAndSlashes: /[ \/]/g
