@@ -2,63 +2,24 @@
     'use strict';
 
     var regexs = require('../utils/regexs');
+    var yaml = require('js-yaml');
 
-    var janitor = {
-        delimiters: ['{{', '}}']
-    };
+    var janitor = {};
 
     janitor.clean = function(mess) {
-        return janitor.mop(janitor.sweep(mess));
-    };
-
-    janitor.sweep = function(mess) {
-        if (!mess) {
-            return;
-        }
-
-        return mess.match(regexs.component(janitor.delimiters[0], janitor.delimiters[1])).map(function(item) {
-            return item.replace(regexs.delimiter(janitor.delimiters[0]), '')
-                       .replace(regexs.delimiter(janitor.delimiters[1]), '')
-                       .trim();
-        })
-    };
-
-    janitor.mop = function(mess) {
-        var count = 0;
-        var keys = [];
-        var values = [];
-        var components = [];
+        var data;
 
         if (!mess) {
-            return components;
+            return [];
         }
 
-        mess.forEach(function(section, i) {
-            var sections = section.split(regexs.sections);
-            var key = sections[0];
-            var value = sections[1];
+        data = yaml.safeLoad(
+            mess.replace(regexs.delimiter.open, '')
+                .replace(regexs.delimiter.close, '')
+            , 'utf8'
+        );
 
-            components[count] = {};
-
-            if (!key || !value) {
-                return;
-            }
-
-            keys.push(key.toLowerCase());
-            values.push(value);
-        }.bind(this));
-
-        keys.forEach(function(key, i) {
-            if (components[count].hasOwnProperty(key)) {
-                count++;
-
-                components[count] = {};
-            }
-
-            components[count][key] = values[i];
-        }.bind(this));
-
-        return components;
+        return [data];
     };
 
     module.exports = janitor;

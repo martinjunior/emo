@@ -29,8 +29,6 @@
     var proto = Scraper.prototype;
 
     proto.init = function() {
-        janitor.delimiters = this.options.delimiters;
-
         var components = this.files.map(this.scrape.bind(this));
 
         components.forEach(function(componentList) {
@@ -54,7 +52,7 @@
         var basename = path.basename(src);
         var basepath = src.replace(basename, '');
         var content = fs.readFileSync(src, this.options.readFileSync);
-        var mess = content.match(regex.docs(this.options.delimiters[0], this.options.delimiters[1]));
+        var mess = content.match(regex.docs);
         var components = janitor.clean(mess ? mess[0] : null);
 
         return components.map(function(component) {
