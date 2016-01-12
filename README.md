@@ -119,7 +119,6 @@ grunt.initConfig({
     }
 });
 ```
-```
 
 #### Custom Options
 Below, emo is configured to output the style-guide as well as its source in a custom location.
