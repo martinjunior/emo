@@ -10,11 +10,11 @@
     module.exports = {
         docs: /[-]{3}doc[\s\S]+[-]{3}/g,
         delimiter: {
-            open: /^[-]{3}docs/,
+            open: /^[-]{3}doc/,
             close: /[-]{3}$/
         },
         markdownFile: /.md$/g,
-        styleguideSrcPath: /[A-Za-z\/\-_]+\/styleguide\//,
+        styleguideSrcPath: /[A-Za-z\/\-_ :]+\/styleguide\//,
         spacesAndSlashes: /[ \/]/g
     };
 

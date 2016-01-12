@@ -16,7 +16,6 @@
         data = yaml.safeLoad(
             mess.replace(regexs.delimiter.open, '')
                 .replace(regexs.delimiter.close, '')
-            , 'utf8'
         );
 
         return [data];

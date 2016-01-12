@@ -51,35 +51,13 @@
         this.filesToScrape = this.grunt.file.expand(this.options.scrape);
 
         /**
-         * The title of the style-guide
-         * 
-         * @property styleGuide.title
-         * @type {Object}
-         */
-        this.title = this.options.title || this.options.categories.join(' ');
-
-        /**
-         * The abbreviation of the style-guide
-         * 
-         * @property styleGuide.abbr
-         * @type {Object}
-         */
-        this.abbr = this.options.abbr || this.options.categories.map(
-            function(category) {
-                return category[0].toUpperCase() + '.';
-            }
-        ).join('');
-
-        /**
          * A list of components that will
          * be used to render the style-guide
          *
          * @property styleGuide.components
          * @type {Object}
          */
-        this.components = new Scraper(this.filesToScrape, {
-            delimiters: this.options.delimiters
-        }).get();
+        this.components = new Scraper(this.filesToScrape).get();
 
         this.init();
     };
@@ -99,8 +77,7 @@
             dest: 'docs/styleguide/'
         },
         categories: ['elements', 'molecules', 'organisms'],
-        scrape: [],
-        delimiters: ['{{', '}}']
+        scrape: []
     };
 
     /**
