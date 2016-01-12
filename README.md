@@ -1,8 +1,8 @@
 # grunt-emo (Beta)
 
-> A style-guide generator that uses [Swig.js](http://paularmstrong.github.io/swig/)
+> A style-guide generator
 
-Emo is a tool that scrapes documention from your source files which it then uses to generate a style-guide. Emo is capable of gathering documention from, essentially, any type of file, which allows you to easily document your JavaScript, HTML, or whatever other type of component that you'd like documented.
+Emo is a tool that generates a style-guide from documentation it scrapes from your source files. Emo expects documentation to be written in YAML and uses [Swig.js](http://paularmstrong.github.io/swig/) for templating.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
@@ -29,20 +29,22 @@ grunt.initConfig({
     emo: {
         main: {
             options: {
-                path: { ... },
-                copy: {
-                    'assets/css/modern.css': 'web/assets/css/modern.css'
-                }
+                scrape: [
+                    'src/assets/scss/**/*.scss'
+                ]
             },
             files: [
                 {
                     expand: true,
-                    cwd: '',
-                    src: [
-                        'assets/scss/**/*.scss',
-                        'assets/scss/**/*.less',
-                        'assets/css/**/*.css'
-                    ]
+                    cwd: '_styleguide/assets/',
+                    src: ['**'],
+                    dest: 'styleguide/assets/'
+                },
+                {
+                    expand: true,
+                    cwd: 'web/assets/',
+                    src: ['**'],
+                    dest: 'styleguide/assets/'
                 }
             ]
         }
@@ -50,13 +52,17 @@ grunt.initConfig({
 });
 ```
 
+### The `files` property
+
+The `files` property is reserved for those files that should be copied to the style-guide destination path.
+
 ### Options
 
 #### options.path
 Type: `Object`
 Default value: `{ src: '_styleguide/', dest: 'docs/styleguide/' }`
 
-Paths used by the style-guide generator
+Paths used by the style-guide generator. Note that paths must include a trailing slash (`/`).
 
 #### options.path.src
 Type: `String`
@@ -68,47 +74,19 @@ The location the styleguide source code is to be placed. Must include a trailing
 Type: `String`
 Default value: `docs/styleguide/`
 
-The location the styleguide will be built to. Must include a trailing slash.
+The location the styleguide will build to. Must include a trailing slash.
 
-#### options.copy
-Type: `Object`
-Default value: `undefined`
+#### options.scrape
+Type: `Array`
+Default value: `[]`
 
-An object containing assets that should be copied over to the style-guide destination folder.
-
-Note the example below. The right hand assignment is the path to the asset that should be copied; the left hand assignment is the path to where the asset should be copied to within the style-guide destination folder.
+A list of files that should be scraped for documentation. See [documentation syntax](#documentation-syntax) for more details.
 
 #### options.categories
 Type: `Array`
 Default value: `['elements', 'molecules', 'organisms']`
 
-An array containing the categories under which components will appear. Understand that components must fit into a specified category in order to show up in the style-guide.
-
-#### options.title
-Type: `String`
-Default value: `elements molecules organisms`
-
-The title of the style-guide.
-
-#### options.abbr
-Type: `String`
-Default value: `E.M.O.`
-
-The abbreviated style-guide title. This is used as the style-guides display name, by default.
-
-```js
-grunt.initConfig({
-    emo: {
-        main: {
-            options: {
-                copy: {
-                    'assets/css/modern.css': 'web/assets/css/modern.css'
-                }
-            }
-        }
-    }
-});
-```
+An array containing the categories under which components will appear. Understand that components must belong to a specified category in order to show up in the style-guide.
 
 ### Usage Examples
 
@@ -119,22 +97,28 @@ grunt.initConfig({
     emo: {
         main: {
             options: {
-                copy: {
-                    'assets/css/modern.css': 'web/assets/css/modern.css'
-                }
+                scrape: [
+                    'src/assets/scss/**/*.scss'
+                ]
             },
             files: [
                 {
                     expand: true,
-                    cwd: '',
-                    src: [
-                        'assets/scss/**/*.scss'
-                    ]
+                    cwd: '_styleguide/assets/',
+                    src: ['**'],
+                    dest: 'styleguide/assets/'
+                },
+                {
+                    expand: true,
+                    cwd: 'web/assets/',
+                    src: ['**'],
+                    dest: 'styleguide/assets/'
                 }
             ]
         }
     }
 });
+```
 ```
 
 #### Custom Options
@@ -146,20 +130,25 @@ grunt.initConfig({
         main: {
             options: {
                 path: {
-                    src: 'some/path/',
-                    dest: 'styleguide/'
+                    src: 'custom/path/',
+                    dest: 'path/to/styleguide/'
                 },
-                copy: {
-                    'assets/css/modern.css': 'web/assets/css/modern.css'
-                }
+                scrape: [
+                    'src/assets/scss/**/*.scss'
+                ]
             },
             files: [
                 {
                     expand: true,
-                    cwd: '',
-                    src: [
-                        'assets/scss/**/*.scss'
-                    ]
+                    cwd: '_styleguide/assets/',
+                    src: ['**'],
+                    dest: 'styleguide/assets/'
+                },
+                {
+                    expand: true,
+                    cwd: 'web/assets/',
+                    src: ['**'],
+                    dest: 'styleguide/assets/'
                 }
             ]
         }
@@ -169,111 +158,51 @@ grunt.initConfig({
 
 ## Documentation Syntax
 
-Emo searches for name/value combinations within your source files; these name/value combinations are then used within the `component.html` Swig template. Note that all values are parsed as markdown. Name/value combinations are expected to take the following format.
+Emo can scrape documentation from any type of file. Documentation syntax is expected to take the following form.
 
 ```scss
-
 /*
 
-    {% Name: Btn %}
+---doc
 
-    {% Category: elements %}
+name: Btn
 
-    {% Description: <button>I'm a button</button> %}
+category: elements
+
+description: Button descpription
+
+---
 
 */
 
-.btn {
-    color: blue;
-}
-
+.btn { ... }
 ```
 
-Specifically, each name/pair value is expected to be enclosed within `{%%}` markings and separated by a `:`. As components can be lengthy, it's not always ideal to inline documenation in your CSS/SCSS/LESS files. As such, emo allows you to load documentation from markdown files.
+Three property/value combinations are required: name, category and description. Property/value combinations can be added at will.
 
 ```scss
-
 /*
 
-    {% Name: Btn %}
+---doc
 
-    {% Category: elements %}
+name: Btn
 
-    {% Description: relative/path/to/markdown-file.md %}
+category: elements
+
+description: Button descpription
+
+author: Some Person
+
+version: 1.0.0
+
+---
 
 */
 
-.btn {
-    color: blue;
-}
-
+.btn { ... }
 ```
 
-As previously mentioned, emo can accept any number of name/value combinations, though it demands that name, category and description are used. Each name/value combination is available within the generated Swig templates via the `component` global. Use name/value combinations as you wish.
-
-```scss
-
-/*
-
-    {% Name: Btn %}
-
-    {% Category: elements %}
-
-    {% Version: 1.0.0 %}
-
-    {% Author: Michael Jordan %}
-
-    {% Description: relative/path/to/btn_docs.md %}
-
-*/
-
-.btn {
-    color: blue;
-}
-
-```
-
-The previous examples show name/value combinations within CSS comments. Emo is capable of scraping documention from within all comment types:
-
-```scss
-
-//-------------------------------------------------
-// Btn
-//-------------------------------------------------
-//
-//  {% Name: Btn %}
-//
-//  {% Category: elements %}
-//
-//  {% Version: 1.0.0 %}
-//
-//  {% Author: Michael Jordan %}
-//
-//  {% Description: relative/path/to/btn_docs.md %}
-//
-//-------------------------------------------------
-
-.btn {
-    color: blue;
-}
-
-```
-
-```html
-
-<!--
-
-    {% Name: Btn %}
-
-    {% Category: elements %}
-
-    {% Description: <button class="btn">Im' a button</button> %}
-
--->
-
-<button class="btn">Im' a button</button>
-
-```
+Emo expects that contents of documentation blocks to be written in YAML. See the [YAML reference card](http://www.yaml.org/refcard.html) for more information.
 
 ## Categories
 
