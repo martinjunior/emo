@@ -38,7 +38,9 @@
   "keywords": [
     "gruntplugin",
     "style guide",
-    "style-guide"
+    "style-guide",
+    "grunt style guide",
+    "grunt style-guide"
   ],
   "dependencies": {
     "marked": "^0.3.3",

@@ -2,7 +2,7 @@
 
 > A style-guide generator
 
-Emo is a tool that generates a style-guide from documentation it scrapes from your source files. Emo expects documentation to be written in YAML and uses [Swig.js](http://paularmstrong.github.io/swig/) for templating.
+Emo is a tool that generates a style-guide from documentation it collects from your source files. Emo expects documentation to be written in YAML and uses [Swig.js](http://paularmstrong.github.io/swig/) for templating.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
@@ -62,7 +62,7 @@ The `files` property is reserved for those files that should be copied to the st
 Type: `Object`
 Default value: `{ src: '_styleguide/', dest: 'docs/styleguide/' }`
 
-Paths used by the style-guide generator. Note that paths must include a trailing slash (`/`).
+Paths used by the style-guide generator.
 
 #### options.path.src
 Type: `String`
@@ -87,6 +87,12 @@ Type: `Array`
 Default value: `['elements', 'molecules', 'organisms']`
 
 An array containing the categories under which components will appear. Understand that components must belong to a specified category in order to show up in the style-guide.
+
+#### options.delimiters
+Type: `Array`
+Default value: `['{%', '%}']`
+
+Delimiters, within which, component documentation is expected to be written. See [documentation syntax](#documentation-syntax) for more details.
 
 ### Usage Examples
 
@@ -157,12 +163,12 @@ grunt.initConfig({
 
 ## Documentation Syntax
 
-Emo can scrape documentation from any type of file. Documentation syntax is expected to take the following form.
+Emo can scrape documentation from any type of file. Documentation syntax is expected to take the following form and within the delimiters specified within `options.delimiters` (e.g., `{%` and '%}' by default).
 
 ```scss
 /*
 
----doc
+{%
 
 name: Btn
 
@@ -170,7 +176,7 @@ category: elements
 
 description: Button descpription
 
----
+%}
 
 */
 
@@ -182,7 +188,7 @@ Three property/value combinations are required: name, category and description. 
 ```scss
 /*
 
----doc
+{%
 
 name: Btn
 
@@ -194,7 +200,7 @@ author: Some Person
 
 version: 1.0.0
 
----
+%}
 
 */
 
@@ -210,7 +216,7 @@ As inline documentation is not always preferred, emo makes it possible to load e
 ```scss
 /*
 
----doc
+{%
 
 name: Btn
 
@@ -218,7 +224,7 @@ category: elements
 
 description: relative/path/to/btn_docs.md
 
----
+%}
 
 */
 
