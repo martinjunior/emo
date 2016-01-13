@@ -132,19 +132,18 @@
      * @method styleGuide.copy
      */
     proto.copy = function() {
-        this.filesToCopy.filter(function(file) {
-            var src = file.src[0];
-            var isFile = fs.lstatSync(src).isFile();
-
-            return isFile;
-        }).forEach(function(file) {
-            var src = file.src[0];
+        this.filesToCopy.forEach(function(file) {
             var dest = file.dest;
 
-            this.grunt.file.write(
-                file.dest,
-                this.grunt.file.read(src)
-            );
+            file.src.forEach(function(src) {
+                var isFile = this.grunt.file.isFile(src);
+
+                if (!isFile) {
+                    return;
+                }
+
+                this.grunt.file.copy(src, dest);
+            }.bind(this));
         }.bind(this));
     };
 
