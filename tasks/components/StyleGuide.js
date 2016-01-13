@@ -30,10 +30,10 @@
          * A list of files to copy
          * over to the styleguide dest
          *
-         * @property styleGuide.files
+         * @property styleGuide.filesToCopy
          * @type {Object}
          */
-        this.files = files;
+        this.filesToCopy = files;
 
         /**
          * @property styleGuide.options
@@ -57,7 +57,9 @@
          * @property styleGuide.components
          * @type {Object}
          */
-        this.components = new Scraper(this.filesToScrape).get();
+        this.components = new Scraper(
+            this.filesToScrape, this.options.delimiters
+        ).get();
 
         this.init();
     };
@@ -77,7 +79,8 @@
             dest: 'docs/styleguide/'
         },
         categories: ['elements', 'molecules', 'organisms'],
-        scrape: []
+        scrape: [],
+        delimiters: ['{%', '%}']
     };
 
     /**
@@ -129,7 +132,7 @@
      * @method styleGuide.copy
      */
     proto.copy = function() {
-        this.files.filter(function(file) {
+        this.filesToCopy.filter(function(file) {
             var src = file.src[0];
             var isFile = fs.lstatSync(src).isFile();
 
@@ -162,8 +165,6 @@
      */
     proto.buildIndex = function() {
         var data = {
-            title: this.title,
-            abbr: this.abbr,
             components: this.components,
             pathToRoot: '',
             categories: this.options.categories
@@ -191,8 +192,6 @@
 
             // the data we're passing to Swig
             var data = {
-                title: this.title,
-                abbr: this.abbr,
                 components: this.components,
                 component: component,
                 categories: this.options.categories,

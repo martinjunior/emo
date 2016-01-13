@@ -2,16 +2,30 @@
     'use strict';
 
     /**
-     * Regular expessions used by
-     * the emo task
+     * Regular expessions
+     * used by the emo task
      * 
      * @type {Object}
      */
     module.exports = {
-        docs: /[-]{3}doc[\s\S]+[-]{3}/g,
+        docs: function(open, close) {
+            var pattern = new RegExp(
+                open + '((?!(' + open + '|' + close + '))[\\s\\S])+' + close, 'g'
+            );
+
+            return pattern;
+        },
         delimiter: {
-            open: /^[-]{3}doc/,
-            close: /[-]{3}$/
+            open: function(delimiter) {
+                var pattern = new RegExp('^' + delimiter);
+                
+                return pattern;
+            },
+            close: function(delimiter) {
+                var pattern = new RegExp(delimiter + '$');
+                
+                return pattern;
+            }
         },
         markdownFile: /.md$/g,
         styleguideSrcPath: /[A-Za-z\/\-_ :]+\/styleguide\//,
