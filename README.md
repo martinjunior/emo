@@ -96,6 +96,7 @@ grunt.initConfig({
         }
     }
 });
+```
 
 #### options.categories
 Type: `Array`
