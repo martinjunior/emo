@@ -169,14 +169,16 @@
      * @return {Object} processed component
      */
     proto.process = function(component) {
-        var description = component.description; // potentially a markdown file
+        var description = component.description;
         var isFile = description.match(regex.markdownFile);
         var basepath = component._basepath;
 
+        var description = isFile
+                        ? fs.readFileSync(basepath + description, Scraper.OPTIONS.readFileSync)
+                        : description;
+
         component.description = marked(
-            isFile
-            ? fs.readFileSync(basepath + description, Scraper.OPTIONS.readFileSync)
-            : description
+            description.replace(/^\uFEFF/, '')
         );
 
         return component;
