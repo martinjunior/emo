@@ -175,12 +175,12 @@
 
         component.description = marked(
             isFile
-            ? fs.readFileSync(basepath + description, Scraper.OPTIONS.readFileSync)
+            ? fs.readFileSync(basepath + description, Scraper.OPTIONS.readFileSync).replace(/^\uFEFF/, '')
             : description
         );
 
         return component;
-    }
+    };
 
     /**
      * Add the provided component to the
