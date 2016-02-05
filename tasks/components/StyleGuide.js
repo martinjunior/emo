@@ -80,7 +80,8 @@
         },
         categories: ['elements', 'molecules', 'organisms'],
         scrape: [],
-        delimiters: ['{%', '%}']
+        delimiters: ['{%', '%}'],
+        views: null
     };
 
     /**
@@ -155,6 +156,7 @@
     proto.build = function() {
         this.buildIndex();
         this.buildComponents();
+        this.buildViews();
     };
 
     /**
@@ -204,6 +206,56 @@
         }.bind(this));
 
         this.grunt.log.writeln('Documented ' + this.components.length + ' component(s)');
+    };
+
+    /**
+     * Build user specified views
+     * 
+     * @method styleGuide.buildViews
+     */
+    proto.buildViews = function() {
+        var src;
+        var dest;
+        var options;
+        var files;
+
+        if (!this.options.views) {
+            return;
+        }
+
+        src = path.join(this.options.views.src, '/');
+        dest = path.join(this.options.views.dest, '/');
+
+        options = {
+            cwd: path.join(this.options.path.src, (this.options.views.cwd || ''))
+        };
+
+        files = this.grunt.file.expandMapping(src, dest, options);
+
+        files.forEach(function(file) {
+            var _dest = file.dest;
+
+            file.src.forEach(function(src) {
+                var _src = src.replace(this.options.path.src, '');
+                var dirname = path.dirname(_src);
+                var basename = path.basename(_src);
+
+                var data = {
+                    components: this.components,
+                    categories: this.options.categories,
+                    pathToRoot: path.relative(dirname, basename).replace(basename, '')
+                };
+
+                if (!this.grunt.file.isFile(src)) {
+                    return;
+                }
+
+                this.grunt.file.write(
+                    this.options.path.dest + _dest,
+                    swig.compileFile(_src)(data)
+                );
+            }.bind(this));
+        }.bind(this));
     };
 
     module.exports = StyleGuide;
