@@ -61,6 +61,16 @@
             this.filesToScrape, this.options.delimiters
         ).get();
 
+        /**
+         * A list of views to be compiled by Swig
+         *
+         * @property styleGuide.views
+         * @type {Object}
+         */
+        this.views = this.getViews(
+            this.expandFileMapping(this.options.views)
+        );
+
         this.init();
     };
 
@@ -81,7 +91,7 @@
         categories: ['elements', 'molecules', 'organisms'],
         scrape: [],
         delimiters: ['{%', '%}'],
-        views: null
+        views: {}
     };
 
     /**
@@ -166,6 +176,7 @@
      */
     proto.buildIndex = function() {
         var data = {
+            views: this.views,
             components: this.components,
             pathToRoot: '',
             categories: this.options.categories
@@ -187,12 +198,11 @@
         var basepath = this.options.path.dest;
 
         this.components.forEach(function(component) {
-            // where, within the basepath, are we putting this file?
-            var directory = component.category.toLowerCase() + '/';
             var template = component.template || 'component.html';
 
             // the data we're passing to Swig
             var data = {
+                views: this.views,
                 components: this.components,
                 component: component,
                 categories: this.options.categories,
@@ -200,7 +210,7 @@
             };
 
             this.grunt.file.write(
-                basepath + directory + component.file,
+                basepath + component.path,
                 swig.compileFile('templates/' + template)(data)
             );
         }.bind(this));
@@ -209,52 +219,98 @@
     };
 
     /**
-     * Build user specified views
+     * Return Grunt file map object
+     * 
+     * @method styleGuide.expandFileMapping
+     * @param {Object} fmo Grunt file mapping object
+     * @param {Object} fmo.src
+     * @param {Object} fmo.dest
+     * @param {Object} [fmo.cwd]
+     * @return {Array} file map
+     */
+    proto.expandFileMapping = function(fmo) {
+        var src;
+        var dest;
+        var options = {
+            cwd: null
+        };
+
+        if (!fmo || !fmo.src || !fmo.dest) {
+            return [];
+        }
+
+        src = fmo.src;
+        dest = path.join(fmo.dest, '/');
+        options.cwd = path.join(this.options.path.src, fmo.cwd || '');
+
+        return this.grunt.file.expandMapping(src, dest, options);
+    };
+
+    /**
+     * Return a views array, which
+     * will serve as data within the templates
+     * 
+     * @method styleGuide.getViews
+     * @param {Array} files a Grunt file map
+     * @return {Array} views
+     */
+    proto.getViews = function(files) {
+        var views = [];
+
+        if (!files.length) {
+            return views;
+        }
+
+        files.forEach(function(file) {
+            var src = file.src;
+            var dest = file.dest;
+
+            src.forEach(function(fileOrDest) {
+                var name;
+                var filename;
+                var isFile = this.grunt.file.isFile(fileOrDest);
+
+                if (!isFile) {
+                    return;
+                }
+
+                name = path.basename(fileOrDest, path.extname(fileOrDest));
+                filename = path.basename(fileOrDest);
+
+                views.push({
+                    name: name.replace(regex.dashes, ' '),
+                    _src: fileOrDest.replace(this.options.path.src, ''),
+                    path: dest,
+                    filename: filename
+                });
+            }.bind(this));
+        }.bind(this));
+
+        return views;
+    };
+
+    /**
+     * Compile the vies
      * 
      * @method styleGuide.buildViews
      */
     proto.buildViews = function() {
-        var src;
-        var dest;
-        var options;
-        var files;
-
-        if (!this.options.views) {
+        if (!this.views.length) {
             return;
         }
 
-        src = path.join(this.options.views.src, '/');
-        dest = path.join(this.options.views.dest, '/');
+        this.views.forEach(function(view) {
+            var data = {
+                views: this.views,
+                components: this.components,
+                categories: this.options.categories,
+                pathToRoot: path.join(path.relative(view.path.replace(view.filename, ''), './'), '/')
+            };
 
-        options = {
-            cwd: path.join(this.options.path.src, (this.options.views.cwd || ''))
-        };
-
-        files = this.grunt.file.expandMapping(src, dest, options);
-
-        files.forEach(function(file) {
-            var _dest = file.dest;
-
-            file.src.forEach(function(src) {
-                var _src = src.replace(this.options.path.src, '');
-                var dirname = path.dirname(_src);
-                var basename = path.basename(_src);
-
-                var data = {
-                    components: this.components,
-                    categories: this.options.categories,
-                    pathToRoot: path.relative(dirname, basename).replace(basename, '')
-                };
-
-                if (!this.grunt.file.isFile(src)) {
-                    return;
-                }
-
-                this.grunt.file.write(
-                    this.options.path.dest + _dest,
-                    swig.compileFile(_src)(data)
-                );
-            }.bind(this));
+            this.grunt.file.write(
+                this.options.path.dest + view.path,
+                swig.compileFile(view._src)(data)
+            );
         }.bind(this));
     };
 

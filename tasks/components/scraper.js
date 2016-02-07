@@ -122,14 +122,15 @@
         var content = fs.readFileSync(src, Scraper.OPTIONS.readFileSync);
         var pattern = regex.docs(this.delimiters[0], this.delimiters[1]);
         var content = content.match(pattern);
-        var components = this.componentize(content);
+        var components = this.serialize(content);
 
         return components.map(function(component) {
-            var filename = Scraper.stringToFileName(component.name);
+            var filename = Scraper.stringToFileName(component.name) + '.html';
 
             return merge(component, {
                 _basepath: basepath,
-                file: filename + '.html'
+                path: path.join(component.category, filename),
+                filename: filename
             });
         });
     };
@@ -138,11 +139,11 @@
      * Convert content into valid JSON,
      * which will respresent component models
      * 
-     * @method scraper.componentize
+     * @method scraper.serialize
      * @param {String} content
      * @return {Array} a list of component data
      */
-    proto.componentize = function(content) {
+    proto.serialize = function(content) {
         var data = [];
 
         if (!content) {

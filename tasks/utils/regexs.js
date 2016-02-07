@@ -29,7 +29,8 @@
         },
         markdownFile: /.md$/g,
         styleguideSrcPath: /[A-Za-z\/\-_ :]+\/styleguide\//,
-        spacesAndSlashes: /[ \/]/g
+        spacesAndSlashes: /[ \/]/g,
+        dashes: /-/g
     };
 
 } ());
