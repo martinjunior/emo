@@ -6,7 +6,7 @@
     var merge = require('../utils/merge');
     var fileExists = require('../utils/fileExists');
     var regex = require('../utils/regexs');
-    var Scraper = require('./scraper');
+    var Scraper = require('./Scraper');
     var swig = require('swig');
 
     /**
@@ -201,7 +201,7 @@
 
             this.grunt.file.write(
                 basepath + directory + component.file,
-                swig.compileFile(template)(data)
+                swig.compileFile('templates/' + template)(data)
             );
         }.bind(this));
 
