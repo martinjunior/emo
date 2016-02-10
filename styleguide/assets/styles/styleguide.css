@@ -39,16 +39,17 @@ body {
     border-top: 1px solid #f1f1f1;
 }
 
-.sg-nav> * + * {
-    margin-top: 10px;
+.sg-nav-title {
+    display: block;
+    margin-bottom: 5px;
 }
 
-.sg-nav-menu > * {
+.sg-nav .sg-nav {
     margin-left: 20px;
 }
 
-.sg-nav-menu > * + * {
-    margin-top: 5px;
+.sg-nav > * + * {
+    margin-top: 10px;
 }
 
 .sg-component > * + * {

@@ -6,7 +6,8 @@
     var merge = require('../utils/merge');
     var fileExists = require('../utils/fileExists');
     var regex = require('../utils/regexs');
-    var Scraper = require('./Scraper');
+    var Componentizer = require('./Componentizer');
+    var Viewizer = require('./Viewizer');
     var swig = require('swig');
 
     /**
@@ -41,14 +42,27 @@
          */
         this.options = merge(StyleGuide.OPTIONS, options);
 
+        // ensure paths end with a '/'
+        this.options.path.src = path.join(this.options.path.src, '/');
+        this.options.path.dest = path.join(this.options.path.dest, '/');
+
         /**
          * Files to scrape for component data
          *
-         * @property styleGuide.filesToScrape
+         * @property styleGuide.componentsToScrape
          * @type {Array}
          * @default []
          */
-        this.filesToScrape = this.grunt.file.expand(this.options.scrape);
+        this.componentsToScrape = this.grunt.file.expand(this.options.scrape);
+
+        /**
+         * Files to scrape for view data
+         *
+         * @property styleGuide.viewsToScrape
+         * @type {Array}
+         * @default []
+         */
+        this.viewsToScrape = this.expandFileMapping(this.options.views);
 
         /**
          * A list of components that will
@@ -57,19 +71,20 @@
          * @property styleGuide.components
          * @type {Object}
          */
-        this.components = new Scraper(
-            this.filesToScrape, this.options.delimiters
+        this.components = new Componentizer(
+            this.componentsToScrape, this.options.delimiters
         ).get();
 
         /**
-         * A list of views to be compiled by Swig
+         * A list of views that will
+         * be parsed by Swig.js
          *
          * @property styleGuide.views
          * @type {Object}
          */
-        this.views = this.getViews(
-            this.expandFileMapping(this.options.views)
-        );
+        this.views = new Viewizer(
+            this.viewsToScrape, this.options.delimiters
+        ).get();
 
         this.init();
     };
@@ -88,10 +103,15 @@
             src: '_styleguide/',
             dest: 'docs/styleguide/'
         },
-        categories: ['elements', 'molecules', 'organisms'],
         scrape: [],
         delimiters: ['{%', '%}'],
         views: {}
+    };
+
+    StyleGuide.getRelativePath = function(from, to) {
+        return path.relative(
+            from, to
+        ).replace('../', '').replace(to, '');
     };
 
     /**
@@ -178,8 +198,7 @@
         var data = {
             views: this.views,
             components: this.components,
-            pathToRoot: '',
-            categories: this.options.categories
+            pathToRoot: ''
         };
 
         this.grunt.file.write(
@@ -196,26 +215,49 @@
      */
     proto.buildComponents = function() {
         var basepath = this.options.path.dest;
+        var componentCategories = Object.keys(this.components);
 
-        this.components.forEach(function(component) {
-            var template = component.template || 'component.html';
+        componentCategories.forEach(function(componentCategory) {
+            this.components[componentCategory].forEach(function(component) {
+                var template = component.template || 'component.html';
 
-            // the data we're passing to Swig
-            var data = {
-                views: this.views,
-                components: this.components,
-                component: component,
-                categories: this.options.categories,
-                pathToRoot: '../'
-            };
+                // the data we're passing to Swig
+                var data = {
+                    views: this.views,
+                    components: this.components,
+                    component: component,
+                    pathToRoot: StyleGuide.getRelativePath(component.path, component._basename)
+                };
 
-            this.grunt.file.write(
-                basepath + component.path,
-                swig.compileFile('templates/' + template)(data)
-            );
+                this.grunt.file.write(
+                    basepath + component.path,
+                    swig.compileFile('templates/' + template)(data)
+                );
+            }.bind(this));
         }.bind(this));
 
         this.grunt.log.writeln('Documented ' + this.components.length + ' component(s)');
+    };
+
+    proto.buildViews = function() {
+        var viewCategories = Object.keys(this.views);
+
+        viewCategories.forEach(function(viewCategory) {
+            this.views[viewCategory].forEach(function(view) {
+                var basepath = view._basepath.replace(this.options.path.src, '');
+
+                var data = {
+                    views: this.views,
+                    components: this.components,
+                    pathToRoot: StyleGuide.getRelativePath(view.path, view._basename)
+                };
+
+                this.grunt.file.write(
+                    this.options.path.dest + view.path,
+                    swig.compileFile(basepath + view._basename)(data)
+                );
+            }.bind(this));
+        }.bind(this));
     };
 
     /**
@@ -244,74 +286,6 @@
         options.cwd = path.join(this.options.path.src, fmo.cwd || '');
 
         return this.grunt.file.expandMapping(src, dest, options);
-    };
-
-    /**
-     * Return a views array, which
-     * will serve as data within the templates
-     * 
-     * @method styleGuide.getViews
-     * @param {Array} files a Grunt file map
-     * @return {Array} views
-     */
-    proto.getViews = function(files) {
-        var views = [];
-
-        if (!files.length) {
-            return views;
-        }
-
-        files.forEach(function(file) {
-            var src = file.src;
-            var dest = file.dest;
-
-            src.forEach(function(fileOrDest) {
-                var name;
-                var filename;
-                var isFile = this.grunt.file.isFile(fileOrDest);
-
-                if (!isFile) {
-                    return;
-                }
-
-                name = path.basename(fileOrDest, path.extname(fileOrDest));
-                filename = path.basename(fileOrDest);
-
-                views.push({
-                    name: name.replace(regex.dashes, ' '),
-                    _src: fileOrDest.replace(this.options.path.src, ''),
-                    path: dest,
-                    filename: filename
-                });
-            }.bind(this));
-        }.bind(this));
-
-        return views;
-    };
-
-    /**
-     * Compile the vies
-     * 
-     * @method styleGuide.buildViews
-     */
-    proto.buildViews = function() {
-        if (!this.views.length) {
-            return;
-        }
-
-        this.views.forEach(function(view) {
-            var data = {
-                views: this.views,
-                components: this.components,
-                categories: this.options.categories,
-                pathToRoot: path.join(path.relative(view.path.replace(view.filename, ''), './'), '/')
-            };
-
-            this.grunt.file.write(
-                this.options.path.dest + view.path,
-                swig.compileFile(view._src)(data)
-            );
-        }.bind(this));
     };
 
     module.exports = StyleGuide;

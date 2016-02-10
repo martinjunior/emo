@@ -8,22 +8,44 @@
     </div>
     <nav class="sg-masthead-bd">
         <ul class="sg-nav">
-            {% for category in categories %}
-                <li>
-                    <strong>{{ category | title }}</strong>
-                    <ul class="sg-nav-menu">
-                        {% for component in components %}
-                            {% if component.category == category %}
-                            <li>
-                                <a href="{{ pathToRoot }}{{ component.category }}/{{ component.file }}">
-                                    {{ component.name | title }}
-                                </a>
-                            </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                </li>
-            {% endfor %}
+            <li>
+                <strong class="sg-nav-title">Components</strong>
+                <ul class="sg-nav">
+                    {% for category in components %}
+                        <li>
+                            <strong class="sg-nav-title">{{ loop.key }}</strong>
+                            <ul class="sg-nav">
+                                {% for component in components[loop.key] %}
+                                    <li>
+                                        <a href="{{ pathToRoot }}{{ component.path }}">
+                                            {{ component.name | title }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            <li>
+                <strong class="sg-nav-title">Views</strong>
+                <ul class="sg-nav">
+                    {% for category in views %}
+                        <li>
+                            <strong class="sg-nav-title">{{ loop.key }}</strong>
+                            <ul class="sg-nav">
+                                {% for view in views[loop.key] %}
+                                    <li>
+                                        <a href="{{ pathToRoot }}{{ view.path }}">
+                                            {{ view.name | title }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
         </ul>
     </nav>
 </div>

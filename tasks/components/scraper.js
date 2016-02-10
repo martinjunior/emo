@@ -3,9 +3,7 @@
 
     var fs = require('fs');
     var path = require('path');
-    var marked = require('marked');
     var regex = require('../utils/regexs');
-    var fileExists = require('../utils/fileExists');
     var merge = require('../utils/merge');
     var yaml = require('js-yaml');
 
@@ -18,34 +16,18 @@
      * @param {Array} delimiters open and close delimiters
      * @constructor
      */
-    var Scraper = function(files, delimiters) {
-        /**
-         * Files to scrape for doc blocks
-         * 
-         * @property scraper.files
-         * @type {Array}
-         */
-        this.files = files;
+    var Scraper = function(options) {
+        this.options = merge(Scraper.OPTIONS, options);
 
         /**
-         * Open and close delimiters
-         * 
-         * @property scraper.delimiters
-         * @type {Array}
-         */
-        this.delimiters = delimiters;
-
-        /**
-         * An eventual list a components
+         * An eventual list of data
          * collected from source files
          * 
-         * @property scraper.components
+         * @property scraper.data
          * @type {Array}
          * @default []
          */
-        this.components = [];
-
-        this.init();
+        this.data = [];
     };
 
     /**
@@ -54,45 +36,34 @@
      * @final
      */
     Scraper.OPTIONS = {
+        delimiters: ['{%', '%}'],
         readFileSync: {
             encoding: 'utf8'
         }
     };
 
-    /**
-     * Convert a string into a
-     * suitable filename (e.g., some-component.html)
-     * 
-     * @method Scraper.stringToFileName
-     * @param {String} string
-     * @return {String} file name
-     * @static
-     */
-    Scraper.stringToFileName = function(string) {
-        return string.toLowerCase()
-                     .replace(regex.spacesAndSlashes, '-')
-                     .trim();
-    };
-
     var proto = Scraper.prototype;
 
-    /**
-     * Collect document data by
-     * scraping it from source files
-     * 
-     * @method scraper.init
-     * @return Scraper
-     */
-    proto.init = function() {
-        var components = this.files.map(this.scrape.bind(this));
+    proto.scrape = function(files) {
+        if (!files) {
+            return;
+        }
 
-        components.forEach(function(componentList) {
-            componentList.forEach(function(component) {
-                if (!this.isValid(component)) {
+        files.filter(function(src) {
+            return fs.lstatSync(src).isFile();
+        }).map(
+            this._scrapeSrcFile.bind(this)
+        ).forEach(function(dataList) {
+            if (!dataList) {
+                return;
+            }
+
+            dataList.forEach(function(item) {
+                if (!this.isValid(item)) {
                     return;
                 }
 
-                this.add(this.process(component));
+                this.add(item);
             }.bind(this));
         }.bind(this));
 
@@ -100,37 +71,33 @@
     };
 
     /**
-     * Return components
+     * Return data
      * 
-     * @method scraper.get
+     * @method scraper.getData
      */
-    proto.get = function() {
-        return this.components;
+    proto.getData = function() {
+        return this.data;
     };
 
     /**
      * Scrape the given source file
      * for component documentation
      * 
-     * @method scraper.scrape
+     * @method scraper._scrapeSrcFile
      * @param {String} src path to soure file
-     * @return {Array} a list of components
+     * @return {Array} a list of data
      */
-    proto.scrape = function(src) {
+    proto._scrapeSrcFile = function(src) {
         var basename = path.basename(src);
         var basepath = src.replace(basename, '');
-        var content = fs.readFileSync(src, Scraper.OPTIONS.readFileSync);
-        var pattern = regex.docs(this.delimiters[0], this.delimiters[1]);
-        var content = content.match(pattern);
-        var components = this.serialize(content);
+        var content = fs.readFileSync(src, this.options.readFileSync);
+        var pattern = regex.docs(this.options.delimiters[0], this.options.delimiters[1]);
+        var data = this.serialize(content.match(pattern));
 
-        return components.map(function(component) {
-            var filename = Scraper.stringToFileName(component.name) + '.html';
-
-            return merge(component, {
-                _basepath: basepath,
-                path: path.join(component.category, filename),
-                filename: filename
+        return data.map(function(item) {
+            return merge(item, {
+                _basename: basename,
+                _basepath: basepath
             });
         });
     };
@@ -153,8 +120,8 @@
         data = content.map(function(text) {
             return yaml.safeLoad(
                 text
-                    .replace(regex.delimiter.open(this.delimiters[0]), '')
-                    .replace(regex.delimiter.close(this.delimiters[1]), '')
+                    .replace(regex.delimiter.open(this.options.delimiters[0]), '')
+                    .replace(regex.delimiter.close(this.options.delimiters[1]), '')
             );
         }.bind(this));
 
@@ -162,92 +129,68 @@
     };
 
     /**
-     * Process the description property value
-     * of the provided component as markdown
-     * 
-     * @method scraper.process
-     * @param {Object} component
-     * @return {Object} processed component
-     */
-    proto.process = function(component) {
-        var description = component.description;
-        var isFile = description.match(regex.markdownFile);
-        var basepath = component._basepath;
-
-        var description = isFile
-                        ? fs.readFileSync(basepath + description, Scraper.OPTIONS.readFileSync)
-                        : description;
-
-        component.description = marked(
-            description.replace(/^\uFEFF/, '')
-        );
-
-        return component;
-    }
-
-    /**
-     * Add the provided component to the
-     * list of components, or merge it into
-     * an existing component if it already exists
+     * Add the provided item to the
+     * list of items, or merge it into
+     * an existing item if it already exists
      * 
      * @method scraper.add
-     * @param {Object} component
+     * @param {Object} item
      */
-    proto.add = function(component) {
-        if (this.exists(component)) {
-            this.merge(component);
+    proto.add = function(item) {
+        if (this.exists(item)) {
+            this.merge(item);
 
             return;
         }
 
-        this.components.push(component);
+        this.data.push(item);
     };
 
     /**
-     * Merge the provided component into a
-     * component in the component list whos name
-     * matches that of the provided component
+     * Merge the provided item into a
+     * item in the item list whos name
+     * matches that of the provided item
      * 
      * @method scraper.merge
-     * @param {Object} component
+     * @param {Object} item
      */
-    proto.merge = function(component) {
-        var name = component.name;
+    proto.merge = function(item) {
+        var name = item.name;
 
-        this.components.some(function(target, i) {
+        this.data.some(function(target, i) {
             if (name !== target.name) {
                 return false;
             }
 
-            this.components[i] = merge(target, component);
+            this.data[i] = merge(target, item);
 
             return true;
         }.bind(this));
     };
 
     /**
-     * Determine if the provided component is valid
+     * Determine if the provided item is valid
      * 
      * @method scraper.isValid
-     * @param {Object} component
+     * @param {Object} item
      */
-    proto.isValid = function(component) {
-        return component && component.category && component.name && component.description;
+    proto.isValid = function(item) {
+        return item && item.name;
     };
 
     /**
-     * Determine if the provided component exists
+     * Determine if the provided item exists
      * 
      * @method scraper.exists
-     * @param {Object} component
+     * @param {Object} item
      * @return {Boolean}
      */
-    proto.exists = function(component) {
+    proto.exists = function(item) {
         var exists;
-        var name = component.name;
+        var name = item.name;
 
-        this.components.some(function(component) {
-            exists = component.name === name;
+        this.data.some(function(item) {
+            exists = item.name === name;
 
             return exists;
         });

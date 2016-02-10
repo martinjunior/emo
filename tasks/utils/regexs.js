@@ -27,10 +27,7 @@
                 return pattern;
             }
         },
-        markdownFile: /.md$/g,
-        styleguideSrcPath: /[A-Za-z\/\-_ :]+\/styleguide\//,
-        spacesAndSlashes: /[ \/]/g,
-        dashes: /-/g
+        styleguideSrcPath: /[A-Za-z\/\-_ :]+\/styleguide\//
     };
 
 } ());
