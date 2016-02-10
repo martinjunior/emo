@@ -175,7 +175,7 @@
      * @param {Object} item
      */
     proto.isValid = function(item) {
-        return item && item.name;
+        return item && item.name && item.category;
     };
 
     /**
