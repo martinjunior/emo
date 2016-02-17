@@ -53,16 +53,7 @@
          * @type {Array}
          * @default []
          */
-        this.componentsToScrape = this.grunt.file.expand(this.options.scrape);
-
-        /**
-         * Files to scrape for view data
-         *
-         * @property styleGuide.viewsToScrape
-         * @type {Array}
-         * @default []
-         */
-        this.viewsToScrape = this.expandFileMapping(this.options.views);
+        this.componentsToScrape = this.grunt.file.expand(this.options.components);
 
         /**
          * A list of components that will
@@ -74,6 +65,17 @@
         this.components = new Componentizer(
             this.componentsToScrape, this.options.delimiters
         ).get();
+
+        /**
+         * Files to scrape for view data
+         *
+         * @property styleGuide.viewsToScrape
+         * @type {Array}
+         * @default []
+         */
+        this.viewsToScrape = this.options.views.map(function(fileMappingObject) {
+            return this.expandFileMapping(fileMappingObject);
+        }.bind(this));
 
         /**
          * A list of views that will
@@ -100,12 +102,12 @@
     StyleGuide.OPTIONS = {
         path: {
             _src: __dirname + '/../../styleguide/',
-            src: '_styleguide/',
-            dest: 'docs/styleguide/'
+            src: 'styleguide/src/',
+            dest: 'styleguide/dest/'
         },
-        scrape: [],
-        delimiters: ['{%', '%}'],
-        views: {}
+        delimiters: ['{#', '#}'],
+        components: [],
+        views: []
     };
 
     StyleGuide.getRelativePath = function(from, to) {

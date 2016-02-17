@@ -36,7 +36,7 @@
      * @final
      */
     Scraper.OPTIONS = {
-        delimiters: ['{%', '%}'],
+        delimiters: ['{#', '#}'],
         readFileSync: {
             encoding: 'utf8'
         }

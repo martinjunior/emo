@@ -3,77 +3,59 @@
 
     var fs = require('fs');
     var path = require('path');
-    var marked = require('marked');
-    var merge = require('../utils/merge');
     var regex = require('../utils/regexs');
-    var fileExists = require('../utils/fileExists');
     var Scraper = require('./Scraper');
+    var Componentizer = require('./Componentizer');
 
-    var Componentizer = function(files, delimiters) {
-        this.files = files;
-
-        this.scraper = new Scraper({
-            delimiters: delimiters
-        });
-
-        this.components = {};
-
-        this.init();
+    var Viewizer = function(files, delimiters) {
+        Componentizer.call(this, files, delimiters);
     };
 
-    Componentizer.OPTIONS = {
-        propsToProcess: ['description']
-    };
+    Viewizer.prototype = Object.create(Componentizer.prototype);
+    Viewizer.prototype.constructor = Componentizer;
 
-    Componentizer.readFile = function(filePath) {
-        return fs.readFileSync(
-            filePath,
-            Scraper.OPTIONS.readFileSync
-        ).replace(/^\uFEFF/, '')
-    };
-
-    Componentizer.processComponent = function(component) {
-        Object.keys(component).forEach(function(key) {
-            var filePath = component._basepath + component[key];
-
-            if (Componentizer.OPTIONS.propsToProcess.indexOf(key) === -1) {
-                return;
-            }
-
-            component[key] = marked(
-                fileExists(filePath)
-                ? Componentizer.readFile(filePath)
-                : component[key]
-            );
-        });
-
-        return merge(component, {
-            path: path.join(component.category, component.filename || component.name + '.html')
-        });
-    };
-
-    var proto = Componentizer.prototype;
+    var proto = Viewizer.prototype;
 
     proto.init = function() {
-        this.scraper.scrape(this.files);
+        var srcFiles = [];
 
-        this.scraper.getData()
-            .map(Componentizer.processComponent)
-            .forEach(function(component) {
-                var category = component.category;
+        this.files.forEach(function(fileMapping) {
+            fileMapping.forEach(function(filePair) {
+                filePair.src.forEach(function(src) {
+                    srcFiles.push(src);
+                }.bind(this));
+            });
+        }.bind(this));
 
-                if (!this.components[category]) {
-                    this.components[category] = [];
-                }
-
-                this.components[category].push(component);
-            }.bind(this));
+        return this.scrape(srcFiles);
     };
 
-    proto.get = function() {
-        return this.components;
+    proto.process = function(view) {
+        this.files.some(function(fileMapping) {
+            var match = false;
+
+            fileMapping.some(function(filePair) {
+                filePair.src.some(function(src) {
+                    var isFile = fs.lstatSync(src).isFile();
+
+                    match = (src === view._basepath + view._basename) && isFile;
+
+                    if (match) {
+                        view.path = filePair.dest
+                    }
+
+                    return match;
+                });
+
+                return match;
+            });
+
+            return match;
+        });
+
+        return view;
     };
 
-    module.exports = Componentizer;
+    module.exports = Viewizer;
 
 } ());
