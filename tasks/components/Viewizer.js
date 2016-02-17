@@ -5,61 +5,47 @@
     var path = require('path');
     var regex = require('../utils/regexs');
     var Scraper = require('./Scraper');
+    var Componentizer = require('./Componentizer');
 
     var Viewizer = function(files, delimiters) {
-        this.files = files;
-
-        this.scraper = new Scraper({
-            delimiters: delimiters
-        });
-
-        this.views = {};
-
-        this.init();
+        Componentizer.call(this, files, delimiters);
     };
+
+    Viewizer.prototype = Object.create(Componentizer.prototype);
+    Viewizer.prototype.constructor = Componentizer;
 
     var proto = Viewizer.prototype;
 
     proto.init = function() {
         var srcFiles = [];
 
-        this.files.forEach(function(filePair) {
-            filePair.src.forEach(function(src) {
-                srcFiles.push(src);
-            }.bind(this));
+        this.files.forEach(function(fileMapping) {
+            fileMapping.forEach(function(filePair) {
+                filePair.src.forEach(function(src) {
+                    srcFiles.push(src);
+                }.bind(this));
+            });
         }.bind(this));
 
-        this.scraper.scrape(srcFiles);
-
-        this.scraper.getData()
-            .map(this.processView.bind(this))
-            .forEach(function(view) {
-                var category = view.category;
-
-                if (!this.views[category]) {
-                    this.views[category] = [];
-                }
-
-                this.views[category].push(view);
-            }.bind(this));
+        return this.scrape(srcFiles);
     };
 
-    proto.get = function() {
-        return this.views;
-    };
-
-    proto.processView = function(view) {
-        this.files.some(function(filePair) {
+    proto.process = function(view) {
+        this.files.some(function(fileMapping) {
             var match = false;
 
-            filePair.src.some(function(src) {
-                var isFile = fs.lstatSync(src).isFile();
+            fileMapping.some(function(filePair) {
+                filePair.src.some(function(src) {
+                    var isFile = fs.lstatSync(src).isFile();
 
-                match = (src === view._basepath + view._basename) && isFile;
+                    match = (src === view._basepath + view._basename) && isFile;
 
-                if (match) {
-                    view.path = filePair.dest
-                }
+                    if (match) {
+                        view.path = filePair.dest
+                    }
+
+                    return match;
+                });
 
                 return match;
             });
