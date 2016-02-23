@@ -96,7 +96,7 @@
 
         return data.map(function(item) {
             return merge(item, {
-                _basename: basename,
+                _src: basename,
                 _basepath: basepath
             });
         });

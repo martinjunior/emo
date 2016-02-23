@@ -71,7 +71,7 @@
         Object.keys(component).forEach(function(key) {
             var filePath = component._basepath + component[key];
 
-            if (Componentizer.OPTIONS.propsToProcess.indexOf(key) === -1) {
+            if (Componentizer.OPTIONS.propsToProcess.indexOf(key) === -1 || !component[key]) {
                 return;
             }
 

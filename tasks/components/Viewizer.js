@@ -38,7 +38,7 @@
                 filePair.src.some(function(src) {
                     var isFile = fs.lstatSync(src).isFile();
 
-                    match = (src === view._basepath + view._basename) && isFile;
+                    match = (src === view._basepath + view._src) && isFile;
 
                     if (match) {
                         view.path = filePair.dest

@@ -113,7 +113,7 @@
     StyleGuide.getRelativePath = function(from, to) {
         return path.relative(
             from, to
-        ).replace('../', '').replace(to, '');
+        ).replace('..' + path.sep, '').replace(to, '');
     };
 
     /**
@@ -218,17 +218,20 @@
     proto.buildComponents = function() {
         var basepath = this.options.path.dest;
         var componentCategories = Object.keys(this.components);
+        var numberOfComponents = 0;
 
         componentCategories.forEach(function(componentCategory) {
             this.components[componentCategory].forEach(function(component) {
                 var template = component.template || 'component.html';
+
+                numberOfComponents++;
 
                 // the data we're passing to Swig
                 var data = {
                     views: this.views,
                     components: this.components,
                     component: component,
-                    pathToRoot: StyleGuide.getRelativePath(component.path, component._basename)
+                    pathToRoot: StyleGuide.getRelativePath(component.path, path.basename(component.path))
                 };
 
                 this.grunt.file.write(
@@ -238,28 +241,33 @@
             }.bind(this));
         }.bind(this));
 
-        this.grunt.log.writeln('Documented ' + this.components.length + ' component(s)');
+        this.grunt.log.writeln('Documented ' + numberOfComponents + ' component(s)');
     };
 
     proto.buildViews = function() {
         var viewCategories = Object.keys(this.views);
+        var numberOfViews = 0;
 
         viewCategories.forEach(function(viewCategory) {
             this.views[viewCategory].forEach(function(view) {
                 var basepath = view._basepath.replace(this.options.path.src, '');
 
+                numberOfViews++;
+
                 var data = {
                     views: this.views,
                     components: this.components,
-                    pathToRoot: StyleGuide.getRelativePath(view.path, view._basename)
+                    pathToRoot: StyleGuide.getRelativePath(view.path, view._src)
                 };
 
                 this.grunt.file.write(
                     this.options.path.dest + view.path,
-                    swig.compileFile(basepath + view._basename)(data)
+                    swig.compileFile(basepath + view._src)(data)
                 );
             }.bind(this));
         }.bind(this));
+
+        this.grunt.log.writeln('Built ' + numberOfViews + ' views');
     };
 
     /**
