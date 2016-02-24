@@ -260,8 +260,6 @@
                     pathToRoot: StyleGuide.getRelativePath(view.path, view._src)
                 };
 
-                console.log();
-
                 this.grunt.file.write(
                     this.options.path.dest + view.path,
                     swig.compileFile(src)(data)
