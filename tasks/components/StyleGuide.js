@@ -250,6 +250,8 @@
 
         viewCategories.forEach(function(viewCategory) {
             this.views[viewCategory].forEach(function(view) {
+                var src = path.relative(this.options.path.src, view._basepath + view._src);
+
                 numberOfViews++;
 
                 var data = {
@@ -258,9 +260,11 @@
                     pathToRoot: StyleGuide.getRelativePath(view.path, view._src)
                 };
 
+                console.log();
+
                 this.grunt.file.write(
                     this.options.path.dest + view.path,
-                    swig.compileFile(view.path)(data)
+                    swig.compileFile(src)(data)
                 );
             }.bind(this));
         }.bind(this));
