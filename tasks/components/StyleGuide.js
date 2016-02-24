@@ -250,8 +250,6 @@
 
         viewCategories.forEach(function(viewCategory) {
             this.views[viewCategory].forEach(function(view) {
-                var basepath = view._basepath.replace(this.options.path.src, '');
-
                 numberOfViews++;
 
                 var data = {
@@ -262,7 +260,7 @@
 
                 this.grunt.file.write(
                     this.options.path.dest + view.path,
-                    swig.compileFile(basepath + view._src)(data)
+                    swig.compileFile(view.path)(data)
                 );
             }.bind(this));
         }.bind(this));
@@ -287,7 +285,7 @@
             cwd: null
         };
 
-        if (!fmo || !fmo.src || !fmo.dest) {
+        if (!fmo || !fmo.src || fmo.dest === undefined) {
             return [];
         }
 

@@ -41,7 +41,7 @@
                     match = (src === view._basepath + view._src) && isFile;
 
                     if (match) {
-                        view.path = filePair.dest
+                        view.path = path.join('./', filePair.dest);
                     }
 
                     return match;
