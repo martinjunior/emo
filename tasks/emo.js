@@ -8,12 +8,30 @@
 
 'use strict';
 
-var StyleGuide = require('./components/StyleGuide');
+var StyleGuide = require('emo-gen');
+var expandGruntFilesArray = require('./utils/expandGruntFilesArray');
+var mapGruntFilesObjectToSrcDestMapping = require('./utils/mapGruntFilesObjectToSrcDestMapping');
 
 module.exports = function(grunt) {
 
     grunt.registerMultiTask('emo', 'A style-guide generator.', function() {
-        var styleGuide = new StyleGuide(grunt, this.files, this.options());
+
+        var done = this.async();
+        var options = this.options();
+        var components = options.components;
+        var styleGuide = new StyleGuide();
+
+        styleGuide.place().then(function() {
+            var expandedFiles = expandGruntFilesArray(grunt, this.data.files);
+            var filesToCopy = mapGruntFilesObjectToSrcDestMapping(expandedFiles);
+
+            return styleGuide.copyFiles(filesToCopy);
+        }.bind(this)).then(function() {
+            return styleGuide.build(components);
+        }).then(function() {
+            done();
+        });
+
     });
 
 };
