@@ -157,7 +157,7 @@ description: Button descpription
 .btn { ... }
 ```
 
-Three property/value combinations are required: name, category and description. Property/value combinations can be added at will.
+Two property/value combinations are required: name and category. Property/value combinations can be added at will.
 
 ```scss
 /*
@@ -185,7 +185,7 @@ Emo expects that contents of documentation blocks to be written in YAML. See the
 
 ## Loading External Documentation
 
-As inline documentation is not always preferred, emo makes it possible to load external markdown files. External file paths should be written relatively. Know that emo parses all property values as markdown.
+As inline documentation is not always preferred, emo makes it possible to load external markdown files. External file paths should be written relatively.
 
 ```scss
 /*
