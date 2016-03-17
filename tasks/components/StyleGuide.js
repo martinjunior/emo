@@ -50,7 +50,17 @@
                 gruntFilesObject.dest,
                 StyleGuide.createGruntFileMappingOptions(gruntFilesObject)
             ).forEach(function(srcDestFileMapping) {
-                gruntFilesMappingList.push(srcDestFileMapping);
+                var flattenedArray = [];
+                var dest = srcDestFileMapping.dest;
+
+                srcDestFileMapping.src.forEach(function(src) {
+                    flattenedArray.push({
+                        src: src,
+                        dest: dest
+                    });
+                });
+
+                gruntFilesMappingList = gruntFilesMappingList.concat(flattenedArray);
             });
         }.bind(this));
 
