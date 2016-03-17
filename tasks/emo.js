@@ -15,23 +15,16 @@ var mapGruntFilesObjectToSrcDestMapping = require('./utils/mapGruntFilesObjectTo
 module.exports = function(grunt) {
 
     grunt.registerMultiTask('emo', 'A style-guide generator.', function() {
-
         var done = this.async();
         var options = this.options();
-        var components = options.components;
-        var styleGuide = new StyleGuide();
+        var filesToScrape = options.components;
+        var expandedFiles = expandGruntFilesArray(grunt, this.data.files);
+        var filesToCopy = mapGruntFilesObjectToSrcDestMapping(expandedFiles);
+        var styleGuide = new StyleGuide(filesToScrape, filesToCopy, options);
 
-        styleGuide.place().then(function() {
-            var expandedFiles = expandGruntFilesArray(grunt, this.data.files);
-            var filesToCopy = mapGruntFilesObjectToSrcDestMapping(expandedFiles);
-
-            return styleGuide.copyFiles(filesToCopy);
-        }.bind(this)).then(function() {
-            return styleGuide.build(components);
-        }).then(function() {
+        styleGuide.build().then(function() {
             done();
         });
-
     });
 
 };
