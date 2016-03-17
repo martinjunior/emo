@@ -1,7 +1,7 @@
 {
   "name": "grunt-emo",
   "description": "A style-guide generator",
-  "version": "0.0.44",
+  "version": "0.0.45",
   "homepage": "https://github.com/martinjunior/emo",
   "author": {
     "name": "Martin Duran",
@@ -43,9 +43,10 @@
     "grunt style-guide"
   ],
   "dependencies": {
-    "emo-gen": "^0.0.11",
+    "emo-gen": "git+https://github.com/martinjunior/emo-gen.git",
+    "js-yaml": "^3.5.2",
     "marked": "^0.3.3",
-    "swig": "^1.4.2",
-    "js-yaml": "^3.5.2"
+    "object-assign": "^4.0.1",
+    "swig": "^1.4.2"
   }
 }
