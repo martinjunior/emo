@@ -1,6 +1,8 @@
 (function() {
     'use strict';
 
+    var objectAssign = require('object-assign');
+
     function expandGruntFilesArray(grunt, gruntFilesArray) {
         var gruntFilesMappingList = [];
 
@@ -22,7 +24,7 @@
     };
 
     function createGruntFileMappingOptions(gruntFilesObject) {
-        var gruntFileMappingOptions = Object.assign({}, gruntFilesObject);
+        var gruntFileMappingOptions = objectAssign({}, gruntFilesObject);
 
         // delete those properties we don't need
         delete gruntFileMappingOptions.src;
