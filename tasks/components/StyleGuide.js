@@ -7,9 +7,9 @@
     var StyleGuide = function(grunt, gruntFilesArray, gruntOptions) {
         this.grunt = grunt;
 
-        this.gruntOptions = gruntOptions;
+        this.gruntFilesArray = gruntFilesArray;
 
-        this.filesToCopy = this.expandGruntFilesArray(gruntFilesArray);
+        this.gruntOptions = gruntOptions;
 
         this.generator = new StyleGuideGenerator(
             this.gruntOptions.components,
@@ -31,7 +31,9 @@
 
     proto.build = function() {
         return this.generator.place().then(function() {
-            return this.generator.copyFiles(this.filesToCopy);
+            var filesToCopy = this.expandGruntFilesArray(this.gruntFilesArray);
+
+            return this.generator.copyFiles(filesToCopy);
         }.bind(this)).then(function() {
             return this.generator.build();
         }.bind(this));
