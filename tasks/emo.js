@@ -18,11 +18,16 @@ module.exports = function(grunt) {
         var done = this.async();
         var options = this.options();
         var filesToScrape = options.components;
-        var expandedFiles = expandGruntFilesArray(grunt, this.data.files);
-        var filesToCopy = mapGruntFilesObjectToSrcDestMapping(expandedFiles);
-        var styleGuide = new StyleGuide(filesToScrape, filesToCopy, options);
+        var styleGuide = new StyleGuide(filesToScrape, options);
 
-        styleGuide.build().then(function() {
+        styleGuide.place().then(function() {
+            var expandedFiles = expandGruntFilesArray(grunt, this.data.files);
+            var filesToCopy = mapGruntFilesObjectToSrcDestMapping(expandedFiles);
+
+            return styleGuide.copyFiles(filesToCopy);
+        }).then(function() {
+            return styleGuide.build();
+        }).then(function() {
             done();
         });
     });
