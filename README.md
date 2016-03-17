@@ -74,30 +74,6 @@ Default value: `[]`
 
 A list of files that should be scraped for documentation. See [documentation syntax](#documentation-syntax) for more details.
 
-#### options.views
-Type: `Array`
-Default value: `[]`
-
-A grunt files object (http://gruntjs.com/configuring-tasks#files) that represents a set of views that should be compiled by Swig.js. Note that all paths are prefixed with `options.path.src` or `options.path.dest`, depending on whether or not they are a `src` or `dest` path. For example, `options.views.dest` build upon `options.path.dest`.
-
-**Example:**
-
-```js
-grunt.initConfig({
-    emo: {
-        main: {
-            options: {
-                views: [{
-                    cwd: 'views/' // options.path.src prepended here
-                    src: ['**'],
-                    dest: 'pages/' // options.path.dest prepended here
-                }]
-            }
-        }
-    }
-});
-```
-
 #### options.delimiters
 Type: `Array`
 Default value: `['{#', '#}']`
