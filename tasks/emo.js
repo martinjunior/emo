@@ -8,15 +8,15 @@
 
 'use strict';
 
-var StyleGuide = require('./components/StyleGuide');
+var StyleGuideGenerator = require('./components/StyleGuideGenerator');
 
 module.exports = function(grunt) {
 
     grunt.registerMultiTask('emo', 'A style-guide generator.', function() {
         var done = this.async();
-        var styleGuide = new StyleGuide(grunt, this.data.files, this.options());
+        var styleGuideGenerator = new StyleGuideGenerator(grunt, this.data.files, this.options());
 
-        styleGuide.build().then(function() {
+        styleGuideGenerator.build().then(function() {
             done();
         });
     });
