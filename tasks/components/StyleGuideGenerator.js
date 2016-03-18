@@ -32,7 +32,7 @@
          * @property styleGuideGenerator.gruntOptions
          * @type {Array}
          */
-        this.gruntOptions = gruntOptions;
+        this.gruntOptions = objectAssign(StyleGuideGenerator.OPTIONS, gruntOptions);
 
         /**
          * An emo-gen instance
@@ -42,6 +42,10 @@
         this.generator = new EMOGen(
             this.gruntOptions
         );
+    };
+
+    StyleGuideGenerator.OPTIONS = {
+        components: []
     };
 
     /**
@@ -75,17 +79,15 @@
         return this.generator.place().then(function() {
             var files = this.expandGruntFilesArray(this.gruntFilesArray);
 
-            if (files.length > 0) {
-                this.grunt.log.writeln('Copying ' + files.length + ' files');
-            }
+            this.grunt.log.writeln('Copied ' + files.length + ' file(s)');
 
             return this.generator.copy(files);
         }.bind(this)).then(function() {
-            return this.generator.scrape(this.options.components);
+            return this.generator.scrape(this.gruntOptions.components);
         }.bind(this)).then(function(components) {
-            if (components.length > 0) {
-                this.grunt.log.writeln('Documented ' + components.length + ' components');
-            }
+            var total = this.getComponentsTotal(components);
+
+            this.grunt.log.writeln('Documented ' + total + ' component(s)');
 
             return this.generator.build(components);
         }.bind(this));
@@ -108,7 +110,7 @@
             this.grunt.file.expandMapping(
                 gruntFilesObject.src,
                 gruntFilesObject.dest,
-                StyleGuide.createGruntFileMappingOptions(gruntFilesObject)
+                StyleGuideGenerator.createGruntFileMappingOptions(gruntFilesObject)
             ).forEach(function(srcDestFileMapping) {
                 var flattenedArray = [];
                 var dest = srcDestFileMapping.dest;
@@ -125,6 +127,19 @@
         }.bind(this));
 
         return gruntFilesMappingList;
+    };
+
+    proto.getComponentsTotal = function(components) {
+        var total = 0;
+        var categories = Object.keys(components);
+
+        categories.forEach(function(category) {
+            components[category].forEach(function(comonent) {
+                total++;
+            });
+        });
+
+        return total;
     };
 
     module.exports = StyleGuideGenerator;
