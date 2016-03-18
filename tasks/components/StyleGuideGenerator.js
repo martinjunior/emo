@@ -76,6 +76,10 @@
         return this.generator.place().then(function() {
             var files = this.expandGruntFilesArray(this.gruntFilesArray);
 
+            if (files.length > 0) {
+                this.grunt.log.writeln('Copying ' + files.length + ' files');
+            }
+
             return this.generator.copy(files);
         }.bind(this)).then(function() {
             return this.generator.build();
