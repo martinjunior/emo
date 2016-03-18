@@ -129,6 +129,13 @@
         return gruntFilesMappingList;
     };
 
+    /**
+     * Return the total number of components
+     * found in the provided components collection
+     * 
+     * @param {Object} components  a components collection
+     * @return {Number} total number of components found
+     */
     proto.getComponentsTotal = function(components) {
         var total = 0;
         var categories = Object.keys(components);
