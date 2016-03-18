@@ -40,7 +40,6 @@
          * @property styleGuideGenerator.generator
          */
         this.generator = new EMOGen(
-            this.gruntOptions.components,
             this.gruntOptions
         );
     };
@@ -82,7 +81,13 @@
 
             return this.generator.copy(files);
         }.bind(this)).then(function() {
-            return this.generator.build();
+            return this.generator.scrape(this.options.components);
+        }.bind(this)).then(function(components) {
+            if (components.length > 0) {
+                this.grunt.log.writeln('Documented ' + components.length + ' components');
+            }
+
+            return this.generator.build(components);
         }.bind(this));
     };
 
