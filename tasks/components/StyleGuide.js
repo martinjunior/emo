@@ -31,9 +31,9 @@
 
     proto.build = function() {
         return this.generator.place().then(function() {
-            var filesToCopy = this.expandGruntFilesArray(this.gruntFilesArray);
+            var files = this.expandGruntFilesArray(this.gruntFilesArray);
 
-            return this.generator.copyFiles(filesToCopy);
+            return this.generator.copy(files);
         }.bind(this)).then(function() {
             return this.generator.build();
         }.bind(this));
