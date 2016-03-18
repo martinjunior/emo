@@ -1,23 +1,60 @@
 (function() {
     'use strict';
 
-    var StyleGuideGenerator = require('emo-gen');
+    var EMOGen = require('emo-gen');
     var objectAssign = require('object-assign');
 
-    var StyleGuide = function(grunt, gruntFilesArray, gruntOptions) {
+    /**
+     * A grunt style guide generator
+     * 
+     * @param {Object} grunt
+     * @param {Array} gruntFilesArray  an unexpanded grunt file array
+     * @param {Object} gruntOptions  grunt task options
+     */
+    var StyleGuideGenerator = function(grunt, gruntFilesArray, gruntOptions) {
+        /**
+         * @property styleGuideGenerator.grunt
+         * @type {Object}
+         */
         this.grunt = grunt;
 
+        /**
+         * An unexpanded grunt file array
+         * 
+         * @property styleGuideGenerator.gruntFilesArray
+         * @type {Array}
+         */
         this.gruntFilesArray = gruntFilesArray;
 
+        /**
+         * Grunt task options
+         * 
+         * @property styleGuideGenerator.gruntOptions
+         * @type {Array}
+         */
         this.gruntOptions = gruntOptions;
 
-        this.generator = new StyleGuideGenerator(
+        /**
+         * An emo-gen instance
+         * 
+         * @property styleGuideGenerator.generator
+         */
+        this.generator = new EMOGen(
             this.gruntOptions.components,
             this.gruntOptions
         );
     };
 
-    StyleGuide.createGruntFileMappingOptions = function(gruntFilesObject) {
+    /**
+     * Convert a grunt files object to a
+     * grunt file mapping options object
+     * (http://gruntjs.com/api/grunt.file#grunt.file.expandmapping)
+     * 
+     * @method StyleGuideGenerator.createGruntFileMappingOptions
+     * @return {Object} gruntFileMappingOptions
+     * @static
+     */
+    StyleGuideGenerator.createGruntFileMappingOptions = function(gruntFilesObject) {
         var gruntFileMappingOptions = objectAssign({}, gruntFilesObject);
 
         // delete those properties we don't need
@@ -27,8 +64,14 @@
         return gruntFileMappingOptions;
     };
 
-    var proto = StyleGuide.prototype;
+    var proto = StyleGuideGenerator.prototype;
 
+    /**
+     * Build the style guide
+     * 
+     * @method styleGuideGenerator.build
+     * @return {Object} a promise
+     */
     proto.build = function() {
         return this.generator.place().then(function() {
             var files = this.expandGruntFilesArray(this.gruntFilesArray);
@@ -39,6 +82,12 @@
         }.bind(this));
     };
 
+    /**
+     * Expand grunt files array
+     * 
+     * @method styleGuideGenerator.expandGruntFilesArray
+     * @return {Object} gruntFilesMappingList
+     */
     proto.expandGruntFilesArray = function(gruntFilesArray) {
         var gruntFilesMappingList = [];
 
@@ -69,6 +118,6 @@
         return gruntFilesMappingList;
     };
 
-    module.exports = StyleGuide;
+    module.exports = StyleGuideGenerator;
 
 } ());
