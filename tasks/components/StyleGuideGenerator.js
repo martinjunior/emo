@@ -84,6 +84,9 @@
             return this.generator.copy(files);
         }.bind(this)).then(function() {
             return this.generator.build(this.gruntOptions.components, this.gruntOptions.views);
+        }.bind(this)).then(function(data) {
+            this.grunt.log.writeln('Documented ' + this.getComponentsTotal(data.components) + ' component(s)');
+            this.grunt.log.writeln('Created ' + data.views.length + ' view(s)');
         }.bind(this));
     };
 
