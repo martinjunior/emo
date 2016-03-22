@@ -89,7 +89,7 @@
 
             this.grunt.log.writeln('Documented ' + total + ' component(s)');
 
-            return this.generator.build(components);
+            return this.generator.build(components, this.gruntOptions.views);
         }.bind(this));
     };
 
