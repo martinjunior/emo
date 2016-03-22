@@ -83,13 +83,7 @@
 
             return this.generator.copy(files);
         }.bind(this)).then(function() {
-            return this.generator.scrape(this.gruntOptions.components);
-        }.bind(this)).then(function(components) {
-            var total = this.getComponentsTotal(components);
-
-            this.grunt.log.writeln('Documented ' + total + ' component(s)');
-
-            return this.generator.build(components, this.gruntOptions.views);
+            return this.generator.build(this.gruntOptions.components, this.gruntOptions.views);
         }.bind(this));
     };
 
