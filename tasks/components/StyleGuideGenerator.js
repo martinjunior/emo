@@ -90,8 +90,6 @@
 
             this.grunt.log.writeln('Documented ' + this.getComponentsTotal(components) + ' component(s)');
             this.grunt.log.writeln('Created ' + views.length + ' view(s)');
-
-            console.log('Yes?');
         }.bind(this));
     };
 
