@@ -86,10 +86,12 @@
             return this.generator.build(this.gruntOptions.components, this.gruntOptions.views);
         }.bind(this)).then(function() {
             var components = this.generator.componentsCollection.components;
-            var views = this.generator.viewsCollection.components;
+            var views = this.generator.viewsCollection.views;
 
             this.grunt.log.writeln('Documented ' + this.getComponentsTotal(components) + ' component(s)');
             this.grunt.log.writeln('Created ' + views.length + ' view(s)');
+
+            console.log('Yes?');
         }.bind(this));
     };
 
