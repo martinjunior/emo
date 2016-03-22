@@ -79,10 +79,10 @@
         return this.generator.place().then(function() {
             var files = this.expandGruntFilesArray(this.gruntFilesArray);
 
-            this.grunt.log.writeln('Copied ' + files.length + ' file(s)');
-
             return this.generator.copy(files);
-        }.bind(this)).then(function() {
+        }.bind(this)).then(function(filesCopied) {
+            this.grunt.log.writeln('Copied ' + filesCopied.length + ' file(s)');
+
             return this.generator.build(this.gruntOptions.components, this.gruntOptions.views);
         }.bind(this)).then(function() {
             var components = this.generator.componentsCollection.components;
