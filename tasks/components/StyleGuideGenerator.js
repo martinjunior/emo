@@ -83,7 +83,11 @@
         }.bind(this)).then(function(filesCopied) {
             this.grunt.log.writeln('Copied ' + filesCopied.length + ' file(s)');
 
-            return this.generator.build(this.gruntOptions.components, this.gruntOptions.views);
+            return this.generator.build(
+                this.gruntOptions.components,
+                this.gruntOptions.views,
+                this.gruntOptions.data
+            );
         }.bind(this)).then(function() {
             var components = this.generator.componentsCollection.components;
             var views = this.generator.viewsCollection.views;
