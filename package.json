@@ -43,7 +43,7 @@
     "grunt style-guide"
   ],
   "dependencies": {
-    "emo-gen": "1.0.6",
+    "emo-gen": "git://github.com/martinjunior/emo-gen.git#develop",
     "js-yaml": "^3.5.2",
     "marked": "^0.3.3",
     "object-assign": "^4.0.1",
