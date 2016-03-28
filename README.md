@@ -74,11 +74,29 @@ Default value: `[]`
 
 A list of files that should be scraped for documentation. See [documentation syntax](#documentation-syntax) for more details.
 
-#### options.delimiters
-Type: `Array`
-Default value: `['{#', '#}']`
+#### options.views
+Type: `String`
+Default value: `undefined`
 
-Delimiters, within which, component documentation is expected to be written. See [documentation syntax](#documentation-syntax) for more details.
+A relative path from the root of the style-guide source directory (`styleguide/src/` by default). emo-gen will treat all the `.html` files within the viewDir as static pages, building each one using Nunjucks api.
+
+#### options.data
+Type: `String`
+Default value: `undefined`
+
+A relative path to a `.json` file. Said `.json` file is expected to include a component collection.
+
+Example:
+
+```json
+[
+    {
+        "name": "colors",
+        "standard": "standards",
+        "description": "docs/colors.md"
+    }
+]
+```
 
 ### Usage Examples
 
@@ -91,7 +109,8 @@ grunt.initConfig({
             options: {
                 components: [
                     'src/assets/scss/**/*.scss'
-                ]
+                ],
+                views: 'views'
             },
             files: [
                 {
@@ -137,51 +156,39 @@ grunt.initConfig({
 
 ## Documentation Syntax
 
-Emo can scrape documentation from any type of file. Documentation syntax is expected to take the following form and be written within the delimiters specified within `options.delimiters` (e.g., `{#` and '#}' by default).
+Emo can scrape documentation from any type of file. Documentation syntax is expected to be written as YAML front matter. Example documentation follows.
 
 ```scss
 /*
 
-{#
-
+---
 name: Btn
-
 category: elements
-
 description: Button descpription
-
-#}
+---
 
 */
 
 .btn { ... }
 ```
 
-Two property/value combinations are required: name and category. Property/value combinations can be added at will.
+Three property/value combinations are required: name, category, description. Property/value combinations can be added at will.
 
 ```scss
 /*
 
-{#
-
+---
 name: Btn
-
 category: elements
-
 description: Button descpription
-
 author: Some Person
-
 version: 1.0.0
-
-#}
+---
 
 */
 
 .btn { ... }
 ```
-
-Emo expects that contents of documentation blocks to be written in YAML. See the [YAML reference card](http://www.yaml.org/refcard.html) for more information.
 
 ## Loading External Documentation
 
@@ -190,15 +197,11 @@ As inline documentation is not always preferred, emo makes it possible to load e
 ```scss
 /*
 
-{#
-
+---
 name: Btn
-
 category: elements
-
 description: relative/path/to/btn_docs.md
-
-#}
+---
 
 */
 
