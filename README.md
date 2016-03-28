@@ -74,11 +74,41 @@ Default value: `[]`
 
 A list of files that should be scraped for documentation. See [documentation syntax](#documentation-syntax) for more details.
 
+Example:
+
+```javascript
+grunt.initConfig({
+    emo: {
+        main: {
+            options: {
+                components: [
+                    'src/assets/scss/**/*.scss'
+                ]
+            }
+        }
+    }
+});
+```
+
 #### options.views
 Type: `String`
 Default value: `undefined`
 
 A relative path from the root of the style-guide source directory (`styleguide/src/` by default). emo-gen will treat all the `.html` files within the viewDir as static pages, building each one using Nunjucks api.
+
+Example:
+
+```javascript
+grunt.initConfig({
+    emo: {
+        main: {
+            options: {
+                views: 'views'
+            }
+        }
+    }
+});
+```
 
 #### options.data
 Type: `String`
