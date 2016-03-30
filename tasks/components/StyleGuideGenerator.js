@@ -77,6 +77,8 @@
      */
     proto.build = function() {
         return this.generator.place().then(function() {
+            return this.generator.emptyDestinationFolder();
+        }.bind(this)).then(function() {
             var files = this.expandGruntFilesArray(this.gruntFilesArray);
 
             return this.generator.copy(files);
