@@ -1,6 +1,10 @@
-# grunt-emo (Beta)
+# grunt-emo
 
 > A style-guide generator
+
+## A Node Style-guide Generator
+
+`grunt-emo` is wrapper for `emo-gen`, a style-guide generator that runs on node. See [emo-gen](https://github.com/martinjunior/emo-gen) for more information.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
@@ -110,24 +114,6 @@ grunt.initConfig({
 });
 ```
 
-#### options.data
-Type: `String`
-Default value: `undefined`
-
-A relative path to a `.json` file. Said `.json` file is expected to include a component collection.
-
-Example:
-
-```json
-[
-    {
-        "name": "colors",
-        "standard": "standards",
-        "description": "docs/colors.md"
-    }
-]
-```
-
 ### Usage Examples
 
 #### Default Options
@@ -182,60 +168,6 @@ grunt.initConfig({
         }
     }
 });
-```
-
-## Documentation Syntax
-
-Emo can scrape documentation from any type of file. Documentation syntax is expected to be written as YAML front matter. Example documentation follows.
-
-```scss
-/*
-
----
-name: Btn
-category: elements
-description: Button descpription
----
-
-*/
-
-.btn { ... }
-```
-
-Three property/value combinations are required: name, category, description. Property/value combinations can be added at will.
-
-```scss
-/*
-
----
-name: Btn
-category: elements
-description: Button descpription
-author: Some Person
-version: 1.0.0
----
-
-*/
-
-.btn { ... }
-```
-
-## Loading External Documentation
-
-As inline documentation is not always preferred, emo makes it possible to load external markdown files. External file paths should be written relatively.
-
-```scss
-/*
-
----
-name: Btn
-category: elements
-description: relative/path/to/btn_docs.md
----
-
-*/
-
-.btn { ... }
 ```
 
 ## Contributing
