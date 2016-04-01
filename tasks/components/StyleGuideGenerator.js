@@ -85,8 +85,7 @@
 
             return this.generator.build(
                 this.gruntOptions.components,
-                this.gruntOptions.views,
-                this.gruntOptions.data
+                this.gruntOptions.views
             );
         }.bind(this)).then(function() {
             var components = this.generator.componentsCollection.components;
