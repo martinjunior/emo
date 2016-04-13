@@ -40,7 +40,8 @@
          * @property styleGuideGenerator.generator
          */
         this.generator = new EMOGen(
-            this.gruntOptions
+            this.gruntOptions,
+            this.gruntOptions.nunjucksOptions
         );
     };
 
